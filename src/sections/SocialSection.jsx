@@ -94,20 +94,35 @@ export default function SocialSection() {
       orbitTlRef.current.push(floatTl)
     })
 
-    // 4. Stats counter 
+    // 4. Stats counter (Odometer Style)
+    const animateCounter = (el, target) => {
+        gsap.to({ val: 0 }, {
+          val: target,
+          duration: 2, ease: 'expo.out',
+          onUpdate: function () {
+            el.textContent = target >= 100
+              ? Math.round(this.targets()[0].val).toLocaleString()
+              : this.targets()[0].val.toFixed(1)
+          }
+        })
+    }
+
     document.querySelectorAll('.social-counter').forEach((el) => {
-      const target = parseFloat(el.dataset.target)
-      gsap.to({ val: 0 }, {
-        val: target,
-        duration: 2.5, ease: 'power2.out',
-        onUpdate: function () {
-          el.textContent = target >= 100
-            ? Math.round(this.targets()[0].val).toLocaleString()
-            : this.targets()[0].val.toFixed(1)
-        },
-        scrollTrigger: { trigger: el, start: 'top 80%' },
-      })
+      animateCounter(el, parseFloat(el.dataset.target))
     })
+
+    // 5. Liquid Pill Navigation Indicator
+    const navContainer = section.querySelector('.year-nav-container')
+    const activeBtn = navContainer?.querySelector('.year-btn-active')
+    const pill = section.querySelector('.liquid-nav-pill')
+    if (pill && activeBtn) {
+        gsap.set(pill, { 
+            x: activeBtn.offsetLeft, 
+            width: activeBtn.offsetWidth,
+            height: activeBtn.offsetHeight,
+            opacity: 1
+        })
+    }
     // 5. Interactive Magnetic Phone (3D Tilt)
     const onMouseMove = (e) => {
         const { clientX, clientY } = e
@@ -156,11 +171,31 @@ export default function SocialSection() {
     }
   }, [])
 
-  // 6. Year Fact Reveal Animation
+  // 6. Year change interactions
   useEffect(() => {
+    // Fact reveal
     gsap.fromTo('.fact-reveal-bubble', 
         { scale: 0.8, opacity: 0, y: 20 },
         { scale: 1, opacity: 1, y: 0, duration: 0.5, ease: 'back.out(1.7)' }
+    )
+
+    // Liquid pill slide
+    const navContainer = sectionRef.current?.querySelector('.year-nav-container')
+    const activeBtn = navContainer?.querySelector(`[data-year="${activeYear}"]`)
+    const pill = sectionRef.current?.querySelector('.liquid-nav-pill')
+    if (pill && activeBtn) {
+        gsap.to(pill, {
+            x: activeBtn.offsetLeft,
+            width: activeBtn.offsetWidth,
+            duration: 0.6,
+            ease: 'elastic.out(1, 0.75)'
+        })
+    }
+
+    // Pulse stats cards
+    gsap.fromTo('.stat-card-pulse',
+        { opacity: 0, x: '-100%' },
+        { opacity: 0.4, x: '100%', duration: 0.8, ease: 'power2.inOut', stagger: 0.1 }
     )
   }, [activeYear])
 
@@ -202,8 +237,11 @@ export default function SocialSection() {
               { label: 'Mobile internet share', value: '51.3', suffix: '%' },
               { label: 'iOS apps 2015', value: '1.5', suffix: 'M' },
             ].map((s) => (
-              <div key={s.label} className="glass-card px-5 py-3 text-center min-w-[110px]">
-                <div className="text-xl font-display font-bold text-[var(--cyber-green)]">
+              <div key={s.label} className="glass-card px-5 py-3 text-center min-w-[110px] relative overflow-hidden group">
+                {/* Data Pulse Beam */}
+                <div className="stat-card-pulse absolute inset-0 bg-gradient-to-r from-transparent via-[var(--cyber-green)] to-transparent opacity-0 -translate-x-full pointer-events-none" />
+                
+                <div className="text-xl font-display font-bold text-[var(--cyber-green)] group-hover:scale-110 transition-transform duration-300">
                   <span className="social-counter" data-target={parseFloat(s.value)}>0</span>
                   {s.suffix}
                 </div>
@@ -214,17 +252,21 @@ export default function SocialSection() {
             ))}
           </div>
 
-          {/* Clickable year timeline */}
-          <div className="mt-10 flex gap-3 flex-wrap reveal-line">
+          {/* Clickable year timeline with Liquid Pill */}
+          <div className="year-nav-container mt-10 flex gap-3 flex-wrap reveal-line relative p-1 bg-[rgba(255,255,255,0.02)] rounded-full border border-white/5 w-fit">
+            {/* Liquid Nav Pill */}
+            <div className="liquid-nav-pill absolute top-1 bottom-1 bg-[var(--cyber-green)] rounded-full shadow-[0_0_16px_rgba(0,212,160,0.4)] opacity-0 pointer-events-none" />
+            
             {TIMELINE_YEARS.map((yr) => (
               <button
                 key={yr}
+                data-year={yr}
                 data-cursor
                 onClick={() => setActiveYear(yr)}
-                className={`px-4 py-2 rounded-full font-mono text-xs tracking-wider transition-all duration-300 border
+                className={`year-btn relative z-10 px-4 py-2 rounded-full font-mono text-xs tracking-wider transition-colors duration-400
                   ${activeYear === yr
-                    ? 'bg-[var(--cyber-green)] text-[var(--bg-dark)] border-[var(--cyber-green)] shadow-[0_0_16px_rgba(0,212,160,0.4)]'
-                    : 'border-[var(--border-glow)] text-[var(--text-muted)] hover:border-[var(--cyber-green)] hover:text-[var(--cyber-green)]'
+                    ? 'year-btn-active text-[var(--bg-dark)] font-bold'
+                    : 'text-[var(--text-muted)] hover:text-[var(--cyber-green)]'
                   }`}
               >
                 {yr}
