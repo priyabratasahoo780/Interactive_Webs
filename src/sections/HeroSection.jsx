@@ -118,6 +118,31 @@ export default function HeroSection({ onStartTour }) {
     const particles = new THREE.Points(geometry, material)
     scene.add(particles)
 
+    // Plexus Network (Lines)
+    const lineMaterial = new THREE.LineBasicMaterial({
+        color: '#00d4a0',
+        transparent: true,
+        opacity: 0.2,
+        blending: THREE.AdditiveBlending
+    })
+    const lineGeometry = new THREE.BufferGeometry()
+    const linePositions = new Float32Array(COUNT * 6) // Connect each particle to 2-3 others
+    for (let i = 0; i < COUNT; i++) {
+        const i3 = i * 3
+        const i6 = i * 6
+        linePositions[i6] = positions[i3]
+        linePositions[i6 + 1] = positions[i3 + 1]
+        linePositions[i6 + 2] = positions[i3 + 2]
+        
+        const next = (i + 1) % COUNT
+        linePositions[i6 + 3] = positions[next * 3]
+        linePositions[i6 + 4] = positions[next * 3 + 1]
+        linePositions[i6 + 5] = positions[next * 3 + 2]
+    }
+    lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3))
+    const lines = new THREE.LineSegments(lineGeometry, lineMaterial)
+    scene.add(lines)
+
     //  Mouse parallax 
     let mouseX = 0, mouseY = 0
     const onMouse = (e) => {
@@ -147,10 +172,18 @@ export default function HeroSection({ onStartTour }) {
       const t = clock.getElapsedTime()
       material.uniforms.uTime.value = t
 
-      // Slow auto-rotation + Velocity boost
+      // Cinematic Flight + Velocity boost
       const vFactor = 1 + Math.abs(velocityRef.current / 400)
-      particles.rotation.y = t * (0.04 * vFactor) + mouseX * 0.3
-      particles.rotation.x = mouseY * 0.15 + scrollY * (0.0003 * vFactor)
+      
+      // Auto-drift camera
+      camera.position.x = Math.sin(t * 0.2) * 5
+      camera.position.y = Math.cos(t * 0.2) * 5
+      camera.lookAt(0, 0, 0)
+
+      particles.rotation.y = t * (0.04 * vFactor) + mouseX * 0.5
+      particles.rotation.x = mouseY * 0.2 + scrollY * (0.0003 * vFactor)
+      
+      lines.rotation.copy(particles.rotation)
 
       renderer.render(scene, camera)
     }
@@ -163,6 +196,7 @@ export default function HeroSection({ onStartTour }) {
       window.removeEventListener('resize', onResize)
       renderer.dispose()
       geometry.dispose()
+      lineGeometry.dispose()
       material.dispose()
     }
   }, [])
@@ -303,20 +337,23 @@ export default function HeroSection({ onStartTour }) {
         <div className="w-px h-12 bg-gradient-to-b from-[var(--cyber-green)] to-transparent" />
       </div>
 
-      {/* Corner decorations */}
-      <div className="absolute top-24 left-8 hidden lg:block pointer-events-none">
+      {/* Corner decorations (Masterwork HUD) */}
+      <div className="absolute top-24 left-8 hidden lg:block pointer-events-none data-hud">
         <div className="text-[10px] font-mono text-[var(--text-muted)] leading-5">
-          <div>SYS_BOOT &gt; INIT</div>
-          <div>NET_LAYER &gt; ACTIVE</div>
-          <div>STORY &gt; LOADING...</div>
+          <div className="animate-pulse">SYS_BOOT &gt; INIT</div>
+          <div className="text-[var(--cyber-green)]">NET_LAYER &gt; ACTIVE</div>
+          <div className="flex items-center gap-2">
+            <span className="w-1.5 h-1.5 bg-[var(--cyber-green)] rounded-full animate-ping" />
+            STORY &gt; 1969_V0.1
+          </div>
         </div>
       </div>
 
-      <div className="absolute top-24 right-8 hidden lg:block pointer-events-none">
+      <div className="absolute top-24 right-8 hidden lg:block pointer-events-none data-hud">
         <div className="text-[10px] font-mono text-[var(--text-muted)] leading-5 text-right">
-          <div>1969 ────── 2024</div>
-          <div>NODES: 5.4B</div>
-          <div>PACKETS: ∞</div>
+          <div className="opacity-50">1969 ────── 2024</div>
+          <div className="text-white">NODES: <span className="hud-counter">5.4</span>B</div>
+          <div className="text-cyan-400">STATUS: STABLE</div>
         </div>
       </div>
     </section>
