@@ -108,7 +108,61 @@ export default function SocialSection() {
         scrollTrigger: { trigger: el, start: 'top 80%' },
       })
     })
+    // 5. Interactive Magnetic Phone (3D Tilt)
+    const onMouseMove = (e) => {
+        const { clientX, clientY } = e
+        const rect = phoneRef.current.getBoundingClientRect()
+        const centerX = rect.left + rect.width / 2
+        const centerY = rect.top + rect.height / 2
+        
+        const moveX = (clientX - centerX) / 10
+        const moveY = (clientY - centerY) / 10
+        
+        gsap.to(phoneRef.current, {
+            rotationY: moveX,
+            rotationX: -moveY,
+            x: moveX * 0.5,
+            y: moveY * 0.5,
+            duration: 0.8,
+            ease: 'power2.out'
+        })
+
+        // Magnetic Icons push/pull
+        iconsRef.current.forEach((el) => {
+            if (!el) return
+            const iconRect = el.getBoundingClientRect()
+            const ix = iconRect.left + iconRect.width / 2
+            const iy = iconRect.top + iconRect.height / 2
+            const dist = Math.hypot(clientX - ix, clientY - iy)
+            
+            if (dist < 150) {
+                const angle = Math.atan2(clientY - iy, clientX - ix)
+                const push = (150 - dist) * 0.3
+                gsap.to(el, {
+                    x: `-=${Math.cos(angle) * push}`,
+                    y: `-=${Math.sin(angle) * push}`,
+                    scale: 1.1,
+                    duration: 0.4
+                })
+            } else {
+                gsap.to(el, { scale: 1, duration: 0.6 })
+            }
+        })
+    }
+    window.addEventListener('mousemove', onMouseMove)
+
+    return () => {
+      window.removeEventListener('mousemove', onMouseMove)
+    }
   }, [])
+
+  // 6. Year Fact Reveal Animation
+  useEffect(() => {
+    gsap.fromTo('.fact-reveal-bubble', 
+        { scale: 0.8, opacity: 0, y: 20 },
+        { scale: 1, opacity: 1, y: 0, duration: 0.5, ease: 'back.out(1.7)' }
+    )
+  }, [activeYear])
 
   return (
     <section
@@ -179,7 +233,8 @@ export default function SocialSection() {
           </div>
 
           {/* Active year fact */}
-          <div className="mt-4 glass-card px-5 py-4 max-w-md">
+          <div className="mt-4 glass-card px-5 py-4 max-w-md fact-reveal-bubble overflow-hidden relative">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-400 opacity-20" />
             <YearFact year={activeYear} />
           </div>
         </div>
@@ -190,8 +245,8 @@ export default function SocialSection() {
           <div
             ref={phoneRef}
             className="relative z-10 w-48 h-96 rounded-[2.5rem] border-2 border-[rgba(255,255,255,0.12)]
-              bg-[rgba(255,255,255,0.04)] backdrop-blur-xl shadow-[0_0_60px_rgba(99,102,241,0.2)] overflow-hidden flex flex-col items-center justify-center"
-            style={{ perspective: '400px' }}
+              bg-[rgba(255,255,255,0.04)] backdrop-blur-xl shadow-[0_0_60px_rgba(99,102,241,0.2)] overflow-hidden flex flex-col items-center justify-center transition-transform"
+            style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}
           >
             {/* Status bar */}
             <div className="absolute top-0 left-0 right-0 flex justify-between px-5 pt-3 text-[8px] font-mono text-[var(--text-muted)]">
