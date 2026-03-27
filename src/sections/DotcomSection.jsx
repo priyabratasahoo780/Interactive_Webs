@@ -46,7 +46,7 @@ export default function DotcomSection() {
     const track   = trackRef.current
     if (!section || !track) return
 
-    // 1. Horizontal scroll pinned inside vertical page scroll 
+    // ── 1. Horizontal scroll pinned inside vertical page scroll ───────────────
     const totalScroll = track.scrollWidth - window.innerWidth + 80
 
     const pinTween = gsap.to(track, {
@@ -64,7 +64,7 @@ export default function DotcomSection() {
     })
     timelineRef.current = pinTween
 
-    // 2. Cards scale-in as they come into viewport 
+    // ── 2. Cards scale-in as they come into viewport ──────────────────────────
     cardsRef.current.forEach((card, i) => {
       if (!card) return
       gsap.fromTo(card,
@@ -77,7 +77,7 @@ export default function DotcomSection() {
       )
     })
 
-    // 3. Counter animations (triggered on scroll into view) 
+    // ── 3. Counter animations (triggered on scroll into view) ─────────────────
     statsRef.current.forEach((el) => {
       if (!el) return
       const target = parseInt(el.dataset.target, 10)
@@ -118,8 +118,7 @@ export default function DotcomSection() {
           <div>
             <span className="year-badge">1990s — Dot-com Boom</span>
             <div className="section-divider mt-3" />
-            <h2 data-guide-id="dotcom-title" className="text-7xl md:text-9xl font-black uppercase tracking-tighter mb-4 opacity-20">
-              Era of the Web
+            <h2 className="text-4xl md:text-6xl font-display font-bold mt-3 leading-tight">
               <span className="gradient-text-fire glow-text-pink">Wild West</span>
               <br />
               <span className="text-[var(--text-primary)]">of the Web</span>
@@ -140,13 +139,12 @@ export default function DotcomSection() {
         </div>
       </div>
 
-      {/* Horizontal scroll track */}
+      {/* ── Horizontal scroll track ───────────────────────────────────────────── */}
       <div className="flex items-center h-screen pt-52 pb-10 pl-12">
         <div ref={trackRef} className="horizontal-track gap-5">
           {/* Intro card */}
           <div
             ref={(el) => (cardsRef.current[0] = el)}
-            data-guide-id="dotcom-card-intro"
             className="glass-card flex-shrink-0 w-72 md:w-80 h-80 p-6 flex flex-col justify-between border-[var(--border-glow)]"
             style={{ opacity: 0 }}
           >
@@ -167,7 +165,7 @@ export default function DotcomSection() {
             <div
               key={c.name}
               ref={(el) => (cardsRef.current[i + 1] = el)}
-              data-guide-id={`dotcom-card-${i}`}
+              data-cursor
               className="glass-card flex-shrink-0 w-60 md:w-72 h-80 p-6 flex flex-col justify-between
                 cursor-pointer group transition-all duration-300"
               style={{ opacity: 0 }}

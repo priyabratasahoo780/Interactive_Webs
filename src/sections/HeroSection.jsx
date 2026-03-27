@@ -287,12 +287,12 @@ export default function HeroSection({ onStartTour }) {
           <button
             data-cursor
             onClick={onStartTour}
-            className="group relative px-8 py-4 bg-[var(--cyber-green)] text-[var(--bg-dark)] font-display font-bold uppercase tracking-widest overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
+            className="group flex items-center gap-3 px-8 py-4 rounded-full border border-white/10 hover:border-[var(--cyber-green)] hover:bg-[var(--cyber-green-dim)] transition-all duration-300"
           >
-            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-            <span className="relative z-10 flex items-center gap-2">
-              <span className="text-xl">🤖</span> Start Immersive Demo
-            </span>
+            <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center group-hover:border-[var(--cyber-green)]">
+                <div className="w-2 h-2 bg-white rounded-full group-hover:bg-[var(--cyber-green)] animate-ping" />
+            </div>
+            <span className="font-mono text-[10px] tracking-widest uppercase">Start Guided Tour</span>
           </button>
         </div>
       </div>

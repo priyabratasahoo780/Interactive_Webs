@@ -22,7 +22,6 @@ export default function Web3Section() {
   const sectionRef  = useRef(null)
   const titleRef    = useRef(null)
   const orbRef      = useRef(null)
-  const centerRef   = useRef(null)
   const cardsRef    = useRef([])
   const [toggle, setToggle] = useState('future')
   const velocity = useScrollVelocity()
@@ -100,9 +99,56 @@ export default function Web3Section() {
       )
     })
 
+    // 5. Interactive Magnetic Orb (Mouse Tracking)
+    const onMouseMove = (e) => {
+        const { clientX, clientY } = e
+        const { left, top, width, height } = orbRef.current.getBoundingClientRect()
+        const centerX = left + width / 2
+        const centerY = top + height / 2
+        
+        const moveX = (clientX - centerX) / 15
+        const moveY = (clientY - centerY) / 15
+        
+        gsap.to(orbRef.current, {
+            x: moveX,
+            y: moveY,
+            rotationY: moveX * 2,
+            rotationX: -moveY * 2,
+            duration: 0.8,
+            ease: 'power2.out'
+        })
+    }
+    window.addEventListener('mousemove', onMouseMove)
+
+    // 6. Floating Particles Generator
+    const particleContainer = section.querySelector('.particle-field')
+    if (particleContainer) {
+        for (let i = 0; i < 30; i++) {
+            const dot = document.createElement('div')
+            dot.className = 'absolute w-1 h-1 bg-cyan-400/20 rounded-full'
+            particleContainer.appendChild(dot)
+            
+            gsap.set(dot, { 
+                x: gsap.utils.random(0, 100, true) + '%', 
+                y: gsap.utils.random(0, 100, true) + '%',
+                scale: gsap.utils.random(0.5, 2)
+            })
+            
+            gsap.to(dot, {
+                y: '-=100',
+                opacity: 0,
+                duration: gsap.utils.random(10, 20),
+                repeat: -1,
+                delay: gsap.utils.random(0, 20),
+                ease: 'none'
+            })
+        }
+    }
+
     return () => {
       title && gsap.killTweensOf(title)
       rings?.forEach((r) => gsap.killTweensOf(r))
+      window.removeEventListener('mousemove', onMouseMove)
     }
   }, [])
 
@@ -120,6 +166,9 @@ export default function Web3Section() {
         }}
       />
       <div className="absolute inset-0 bg-grid opacity-15 pointer-events-none" />
+      
+      {/* Dynamic Particle Field */}
+      <div className="particle-field absolute inset-0 pointer-events-none overflow-hidden" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
 
@@ -129,19 +178,14 @@ export default function Web3Section() {
             Web3 + AI + Spatial Computing
           </span>
 
-          <div 
-            ref={centerRef} 
-            data-guide-id="web3-center"
-            className="web3-reveal w-48 h-48 md:w-64 md:h-64 rounded-full border-2 border-amber-500/30 flex items-center justify-center relative overflow-hidden group shadow-[0_0_50px_rgba(251,191,36,0.1)] mx-auto mb-6"
+          <h2
+            ref={titleRef}
+            className="web3-reveal text-5xl md:text-7xl font-display font-bold leading-tight mb-6"
           >
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-transparent group-hover:from-amber-500/20 transition-all duration-500" />
-            <div className="absolute inset-0 rounded-full border border-amber-500/20 animate-pulse-slow" />
-            <div className="relative z-10 text-center text-3xl md:text-4xl font-display font-bold leading-tight">
-              <span className="gradient-text-aurora glow-text-purple">The Next</span>
-              <br />
-              <span className="text-[var(--text-primary)]">Internet</span>
-            </div>
-          </div>
+            <span className="gradient-text-aurora glow-text-purple">The Next</span>
+            <br />
+            <span className="text-[var(--text-primary)]">Internet</span>
+          </h2>
 
           <p className="web3-reveal text-[var(--text-secondary)] text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
             We are at an inflection point as significant as 1969. Decentralization, AI, and
@@ -221,11 +265,34 @@ export default function Web3Section() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {FUTURE_PILLARS.map((p, i) => (
             <div
-              key={i}
+              key={p.title}
               ref={(el) => (cardsRef.current[i] = el)}
-              data-guide-id={`web3-node-${i}`}
-              className="glass-card p-6 border-amber-500/10 hover:border-amber-500/40 transition-all duration-500 cursor-pointer group"
-              style={{ opacity: 0 }}
+              data-cursor
+              onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect()
+                const x = e.clientX - rect.left
+                const y = e.clientY - rect.top
+                const xc = rect.width / 2
+                const yc = rect.height / 2
+                const dx = x - xc
+                const dy = y - yc
+                gsap.to(e.currentTarget, {
+                    rotationY: dx / 10,
+                    rotationX: -dy / 10,
+                    duration: 0.4,
+                    ease: 'power2.out'
+                })
+              }}
+              onMouseLeave={(e) => {
+                gsap.to(e.currentTarget, {
+                    rotationY: 0,
+                    rotationX: 0,
+                    duration: 0.6,
+                    ease: 'power3.out'
+                })
+              }}
+              className="glass-card p-6 group cursor-pointer transition-colors"
+              style={{ opacity: 0, perspective: '1000px', transformStyle: 'preserve-3d' }}
             >
               <div className="text-3xl mb-4 group-hover:scale-110 transition-transform duration-300">{p.icon}</div>
               <h3 className="text-base font-display font-semibold mb-2 group-hover:text-[var(--electric-purple)] transition-colors duration-300">
