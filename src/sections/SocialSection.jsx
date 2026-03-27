@@ -57,15 +57,50 @@ export default function SocialSection() {
     const section = sectionRef.current
     if (!section) return
 
-    // 1. Reveal heading 
-    gsap.fromTo(textRef.current?.querySelectorAll('.reveal-line'),
-      { opacity: 0, y: 50 },
-      {
-        opacity: 1, y: 0,
-        stagger: 0.15, duration: 1, ease: 'power3.out',
-        scrollTrigger: { trigger: section, start: 'top 65%' },
-      }
-    )
+    // 1. Reveal heading (Masterwork Liquid Reveal)
+    const headerWords = textRef.current?.querySelectorAll('.header-word')
+    if (headerWords) {
+        gsap.fromTo(headerWords,
+            { opacity: 0, y: 40, filter: 'blur(10px)', skewX: 20 },
+            {
+                opacity: 1, y: 0, filter: 'blur(0px)', skewX: 0,
+                stagger: 0.1, duration: 1.2, ease: 'expo.out',
+                scrollTrigger: { trigger: section, start: 'top 65%' }
+            }
+        )
+    }
+
+    // 2. SVG Connectivity Paths (Phone to Text)
+    const svgLayer = section.querySelector('.social-svg-layer')
+    if (svgLayer && phoneRef.current) {
+        const createPath = () => {
+            const pRect = phoneRef.current.getBoundingClientRect()
+            const tRect = textRef.current.getBoundingClientRect()
+            const sRect = section.getBoundingClientRect()
+            
+            const x1 = pRect.left - sRect.left
+            const y1 = pRect.top + pRect.height/2 - sRect.top
+            const x2 = tRect.right - sRect.left
+            const y2 = tRect.top + tRect.height/2 - sRect.top
+            
+            return `M ${x1} ${y1} C ${(x1+x2)/2} ${y1} ${(x1+x2)/2} ${y2} ${x2} ${y2}`
+        }
+        
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
+        path.setAttribute('d', createPath())
+        path.setAttribute('class', 'connectivity-path opacity-20')
+        path.setAttribute('stroke', 'var(--cyber-green)')
+        path.setAttribute('stroke-width', '1')
+        path.setAttribute('fill', 'none')
+        svgLayer.appendChild(path)
+        
+        gsap.fromTo(path, 
+            { strokeDashoffset: 1000, strokeDasharray: 1000 },
+            { strokeDashoffset: 0, duration: 3, repeat: -1, ease: 'none' }
+        )
+    }
+
+    // 4. Stats counter (Odometer Style)
 
     // 2. Phone frame slides in 
     gsap.fromTo(phoneRef.current,
@@ -215,8 +250,10 @@ export default function SocialSection() {
     <section
       id="social"
       ref={sectionRef}
-      className="section relative min-h-screen bg-[var(--bg-dark)] flex items-center py-24"
+      className="section relative min-h-screen bg-[#020410] flex items-center py-24 overflow-hidden"
     >
+      {/* SVG Connectivity Layer */}
+      <svg className="social-svg-layer absolute inset-0 w-full h-full pointer-events-none z-0" />
       {/* Purple radial glow */}
       <div
         className="absolute right-0 top-1/2 -translate-y-1/2 w-[700px] h-[700px] pointer-events-none"
@@ -231,11 +268,11 @@ export default function SocialSection() {
             <span className="year-badge mb-4 inline-block">2000s – 2015</span>
           </div>
           <div className="section-divider" />
-          <h2 className="text-4xl md:text-6xl font-display font-bold mt-4 leading-tight reveal-line">
-            Social.{' '}
-            <span className="gradient-text-cyber glow-text">Mobile.</span>
+          <h2 className="text-4xl md:text-6xl font-display font-bold mt-4 leading-tight">
+            <span className="header-word inline-block mr-3">Social.</span>
+            <span className="header-word inline-block gradient-text-cyber glow-text mr-3">Mobile.</span>
             <br />
-            <span className="text-[var(--text-secondary)]">Everywhere.</span>
+            <span className="header-word inline-block text-[var(--text-secondary)]">Everywhere.</span>
           </h2>
           <p className="mt-6 text-[var(--text-secondary)] text-sm leading-relaxed max-w-md reveal-line">
             The internet escaped the desktop. Billions of humans put it in their pockets.
