@@ -60,8 +60,8 @@ body {
    CUSTOM CURSOR
    ============================================ */
 .cursor-dot {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
   background: var(--cyber-green);
   border-radius: 50%;
   position: fixed;
@@ -74,8 +74,8 @@ body {
 }
 
 .cursor-ring {
-  width: 36px;
-  height: 36px;
+  width: 24px;
+  height: 24px;
   border: 1.5px solid var(--cyber-green);
   border-radius: 50%;
   position: fixed;
@@ -88,8 +88,8 @@ body {
 
 .cursor-dot.cursor-hover { width: 4px; height: 4px; }
 .cursor-ring.cursor-hover {
-  width: 60px;
-  height: 60px;
+  width: 48px;
+  height: 48px;
   border-color: var(--neon-pink);
   opacity: 0.6;
 }

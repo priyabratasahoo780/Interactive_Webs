@@ -11,7 +11,7 @@ export default function CustomCursor() {
   // Dynamic cursor scale based on scroll speed
   useEffect(() => {
     if (ringRef.current) {
-        const scaleFactor = 1 + Math.abs(velocity / 800)
+        const scaleFactor = 1 + Math.abs(velocity / 1200)
         gsap.to(ringRef.current, {
             scale: scaleFactor,
             duration: 0.3,
