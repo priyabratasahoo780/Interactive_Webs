@@ -22,11 +22,13 @@ import { useSmoothScroll }    from './hooks/useSmoothScroll'
 import { useScrollProgress }  from './hooks/useScrollProgress'
 import { useScrollVelocity }  from './hooks/useScrollVelocity'
 import { useThemeTransition } from './hooks/useThemeTransition'
+import { useAudioSystem }     from './hooks/useAudioSystem'
 
 // Components
 import BackgroundEvolution from './components/BackgroundEvolution'
 import TimeTravelSlider    from './components/TimeTravelSlider'
 import MiniMap             from './components/MiniMap'
+import DataOverlay         from './components/DataOverlay'
 
 // Register GSAP plugins (idempotent)
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
@@ -42,6 +44,7 @@ export default function App() {
   useScrollProgress()
   useScrollVelocity()
   useThemeTransition()
+  useAudioSystem()
 
   useEffect(() => {
     // Refresh ScrollTrigger after fonts/images are loaded
@@ -68,6 +71,7 @@ export default function App() {
       <Navigation />
       <MiniMap />
       <TimeTravelSlider />
+      <DataOverlay />
 
       {/* Main story */}
       <main className="relative z-10">

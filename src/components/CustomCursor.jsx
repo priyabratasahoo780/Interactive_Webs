@@ -31,10 +31,29 @@ export default function CustomCursor() {
     const moveRingY = gsap.quickTo(ring, 'y', { duration: 0.35, ease: 'power3' })
 
     const onMove = (e) => {
-      moveDotX(e.clientX)
-      moveDotY(e.clientY)
-      moveRingX(e.clientX)
-      moveRingY(e.clientY)
+      // Check if we are hovering a magnetic element
+      const hovered = document.elementFromPoint(e.clientX, e.clientY)
+      const magnetic = hovered?.closest('[data-magnetic]') || (hovered?.tagName === 'BUTTON' ? hovered : null)
+
+      if (magnetic) {
+        const rect = magnetic.getBoundingClientRect()
+        const centerX = rect.left + rect.width / 2
+        const centerY = rect.top + rect.height / 2
+        
+        moveDotX(e.clientX)
+        moveDotY(e.clientY)
+        // Pull ring towards center
+        moveRingX(centerX + (e.clientX - centerX) * 0.35)
+        moveRingY(centerY + (e.clientY - centerY) * 0.35)
+        
+        ring.classList.add('cursor-magnetic')
+      } else {
+        moveDotX(e.clientX)
+        moveDotY(e.clientY)
+        moveRingX(e.clientX)
+        moveRingY(e.clientY)
+        ring.classList.remove('cursor-magnetic')
+      }
     }
 
     // Add hover state for interactive elements
