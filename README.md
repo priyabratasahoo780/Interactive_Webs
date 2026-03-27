@@ -1,16 +1,55 @@
-# React + Vite
+# 🌐 Internet Evolution — An Interactive Journey
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> **An immersive, cinematic storytelling experience exploring the history of the world's most transformative network.**
 
-Currently, two official plugins are available:
+![Internet Evolution Mascot](./public/mascot.png)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 The Experience
 
-## React Compiler
+Internet Evolution is a high-end web experience that takes you on a journey from the very first nodes of **ARPANET (1969)** to the decentralized frontier of **Web3** and the future of **Spatial Computing**.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 🤖 AI-Guided Cinematic Tour
+Our custom **AI Robot Guide** provides a narrated, hands-free experience. When you "Start the Guided Tour," the site automatically:
+- **Cinematic Auto-Scrolling**: Navigates sections with weighted, camera-like movement.
+- **Voice Narration**: Uses advanced Text-to-Speech (Web Speech API) to tell the story of each era.
+- **Interactive HUD**: Displays real-time data and section protocols alongside the guide.
 
-## Expanding the ESLint configuration
+## 🛠️ Technical Masterwork
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+This project is built with a focus on buttery-smooth performance and ultra-premium aesthetics:
+
+- **⚛️ React 19**: Modern component architecture for high-performance state management.
+- **✨ GSAP + ScrollTrigger**: Power4-eased reveals and intricate cinematic timelines.
+- **🌪️ Three.js**: Generative particle galaxies and 3D network nodes in the Hero section.
+- **🌊 Lenis Scroll**: Weighted, inertial smooth scrolling for a luxurious tactile feel.
+- **🎨 Tailwind CSS**: Responsive, utility-first styling with custom glassmorphism effects.
+
+## 📱 Fully Responsive
+
+Every section is meticulously hand-tuned for **Mobile, Tablet, and Desktop**.
+- **Mobile-First Navigation**: A high-tech animated hamburger menu with a full-screen overlay.
+- **Fluid Layouts**: Text and 3D elements scale perfectly across all viewport widths.
+- **Touch Optimized**: Weighted interactions and increased hit areas for seamless mobile exploration.
+
+## 🛠️ Installation & Tech Setup
+
+1. **Clone & Install**:
+   ```bash
+   git clone [your-repo-url]
+   cd Fontend
+   npm install
+   ```
+
+2. **Run Development Server**:
+   ```bash
+   npm run dev
+   ```
+
+3. **Build for Production**:
+   ```bash
+   npm run build
+   ```
+
+---
+
+*“From four nodes on ARPANET to a global consciousness — the story continues with you.”*
