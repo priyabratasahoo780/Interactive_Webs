@@ -8,17 +8,21 @@
 
 Internet Evolution is a high-end web experience that takes you on a journey from the very first nodes of **ARPANET (1969)** to the decentralized frontier of **Web3** and the future of **Spatial Computing**.
 
-### 🤖 AI-Guided Cinematic Tour
-Our custom **AI Robot Guide** provides a narrated, hands-free experience. When you "Start the Guided Tour," the site automatically:
-- **Cinematic Auto-Scrolling**: Navigates sections with weighted, camera-like movement.
-- **Voice Narration**: Uses advanced Text-to-Speech (Web Speech API) to tell the story of each era.
-- **Interactive HUD**: Displays real-time data and section protocols alongside the guide.
-- **Expanded Journey**: The tour now includes the **AI Revolution** and **Spatial Web**, with a unique **Conclusion** at the footer.
+---
 
-### 🧭 Modern Floating Navigation
-Experience a sleek **Glassmorphism Capsule** navbar that follows you throughout the story:
-- **GSAP Sliding Indicator**: A smooth, elastic pill that tracks your current section as you scroll.
-- **Global Section Sync**: Every chapter of the internet's evolution is just one click away.
+## 🤖 SPECIAL FEATURE: Your AI Companion
+
+> [!IMPORTANT]
+> **Experience the internet's story hands-free with our custom AI-Guided Tour.**
+
+### **Meet your Digital Historian**
+The site features a built-in **AI Robot Guide** designed to provide a narrated, cinematic exploration of the web's greatest milestones.
+
+**Key Guide Capabilities:**
+- **🎙️ Advanced Voice Synthesis**: Real-time narration using the Web Speech API brings the story to life with automated chapters and high-clarity descriptions.
+- **🎥 Dynamic Cinematic Scrolling**: Forget manual scrolling. The robot takes control of the camera, executing weighted, multi-axis movements that feel like a high-end documentary.
+- **🛰️ Live Data HUD**: As you travel through time, the robot’s holographic interface displays real-time network protocols, encryption status, and era-specific metadata.
+- **🏁 Grand Conclusion**: The guide now follows you through the **AI Revolution** and **Spatial Web**, providing a meaningful closing reflection at the very end.
 
 ---
 
@@ -39,9 +43,9 @@ This project is built with a focus on buttery-smooth performance and ultra-premi
 ## 📱 Fully Responsive Perfection
 
 Every section is meticulously hand-tuned for the best experience on every device:
+- **Floating Capsule Navigation**: A sleek, centered glassmorphism navbar with a GSAP sliding indicator that tracks your journey.
 - **Mobile-First Core**: A high-tech animated hamburger menu with a full-screen blurred overlay.
-- **Adaptive UI**: High-end data cards, holographic globes, and 3D visuals scale perfectly for portrait orientation.
-- **Minimalist Cursor**: A custom, precise 6px/22px cursor that provides high-end visual feedback on all interactions.
+- **Minimalist Cursor**: A custom, precise 6px/22px cursor providing elite tactile feedback on all interactions.
 
 ---
 
