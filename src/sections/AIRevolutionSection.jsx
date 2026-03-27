@@ -112,6 +112,26 @@ export default function AIRevolutionSection() {
             className="section relative min-h-screen bg-[#050510] flex items-center overflow-hidden"
         >
             <div className="absolute inset-0 bg-grid opacity-10" />
+
+            {/* Background Synaptic Layer (Vertical Signal Flow) */}
+            <div className="absolute inset-0 pointer-events-none opacity-20">
+                <svg className="w-full h-full" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+                    <line x1="10%" y1="0" x2="10%" y2="1000" stroke="rgba(251, 191, 36, 0.1)" strokeWidth="0.5" strokeDasharray="5,10" />
+                    <line x1="30%" y1="0" x2="30%" y2="1000" stroke="rgba(251, 191, 36, 0.05)" strokeWidth="0.5" />
+                    <line x1="70%" y1="0" x2="70%" y2="1000" stroke="rgba(251, 191, 36, 0.05)" strokeWidth="0.5" />
+                    <line x1="90%" y1="0" x2="90%" y2="1000" stroke="rgba(251, 191, 36, 0.1)" strokeWidth="0.5" strokeDasharray="5,10" />
+                </svg>
+            </div>
+
+            {/* Scrolling Neural Telemetry Tickers (Empty space fill) */}
+            <div className="absolute bottom-10 left-0 w-full pointer-events-none opacity-10 select-none overflow-hidden space-y-2">
+                <div className="text-[6vw] font-mono whitespace-nowrap leading-none animate-marquee-slow text-amber-500/40">
+                    NEURAL_WEIGHTS:[0.84, 0.91, 0.12, 0.77] // SYNAPSE_DENSITY:HIGH // OPTIMIZING_LAYER_4...
+                </div>
+                <div className="text-[6vw] font-mono whitespace-nowrap leading-none animate-marquee-slow-reverse text-amber-500/20">
+                    LLM_CONTEXT_WINDOW:EXPANDING // TOKEN_VELOCITY:450/SEC // Q_STAR_PROTOCOL:ACTIVE...
+                </div>
+            </div>
             
             <div className="relative z-10 w-full max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center text-center lg:text-left pt-12 lg:pt-0">
                 <div>
