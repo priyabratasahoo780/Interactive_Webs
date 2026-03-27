@@ -73,10 +73,25 @@ export default function AIRevolutionSection() {
             paused: true
         })
 
+        // Smooth Mouse Parallax for the neural network
+        const xTo = gsap.quickTo(svgRef.current, "x", { duration: 1, ease: "power3" })
+        const yTo = gsap.quickTo(svgRef.current, "y", { duration: 1, ease: "power3" })
+
+        const onMouseMove = (e) => {
+            const { clientX, clientY } = e
+            const rect = svgRef.current.getBoundingClientRect()
+            const x = (clientX - (rect.left + rect.width / 2)) / 30
+            const y = (clientY - (rect.top + rect.height / 2)) / 30
+            xTo(x)
+            yTo(y)
+        }
+        window.addEventListener('mousemove', onMouseMove)
+
         return () => {
             tl.kill()
             firingTl.kill()
             velocityEffect.kill()
+            window.removeEventListener('mousemove', onMouseMove)
         }
     }, [])
 
@@ -98,22 +113,22 @@ export default function AIRevolutionSection() {
         >
             <div className="absolute inset-0 bg-grid opacity-10" />
             
-            <div className="relative z-10 w-full max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div className="relative z-10 w-full max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center text-center lg:text-left pt-12 lg:pt-0">
                 <div>
-                    <span className="year-badge mb-6 inline-block" style={{ color: '#fbbf24', borderColor: '#fbbf24' }}>
+                    <span className="year-badge mb-4 md:mb-6 inline-block" style={{ color: '#fbbf24', borderColor: '#fbbf24', fontSize: '10px' }}>
                         2023 — The AI Revolution
                     </span>
-                    <h2 className="text-5xl md:text-7xl font-display font-bold leading-tight mb-8">
+                    <h2 className="text-3xl sm:text-4xl md:text-7xl font-display font-bold leading-tight mb-6 md:mb-8">
                         The Neural <br />
                         <span className="gradient-text-aurora glow-text-amber">Awakening</span>
                     </h2>
-                    <p className="text-[var(--text-secondary)] text-lg max-w-md leading-relaxed">
+                    <p className="text-[var(--text-secondary)] text-sm md:text-lg max-w-md mx-auto lg:mx-0 leading-relaxed">
                         The internet is no longer just a library of data. It has become a cognitive layer. 
                         Machines now generate, reason, and create alongside us, reshaping the fabric of reality.
                     </p>
                 </div>
 
-                <div className="relative aspect-square max-w-lg mx-auto lg:mx-0">
+                <div className="relative aspect-square w-full max-w-xs sm:max-w-md md:max-w-lg mx-auto lg:mx-0 scale-90 sm:scale-100">
                     <svg ref={svgRef} viewBox="0 0 100 100" className="w-full h-full overflow-visible">
                         {/* Synapses (Paths) */}
                         {SYNAPSES.map(([from, to]) => {

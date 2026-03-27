@@ -114,7 +114,7 @@ export default function ArpanetSection() {
       if (!el) return
       tl.fromTo(el,
         { opacity: 0, x: 40, filter: 'blur(4px)' },
-        { opacity: 1, x: 0, filter: 'blur(0px)', duration: 0.4, ease: 'power3.out' },
+        { opacity: 1, x: 0, filter: 'blur(0px)', duration: 0.4, ease: 'power4.out' },
         i * 0.2
       )
     })
@@ -142,10 +142,27 @@ export default function ArpanetSection() {
       })
     })
 
-    return () => ScrollTrigger.getAll().forEach((st) => {
-      if (st.trigger === section) st.kill()
-    })
-  }, [])
+    // Smooth Mouse Parallax for the ARPANET map
+    const xTo = gsap.quickTo(svgRef.current, "x", { duration: 1, ease: "power3" })
+    const yTo = gsap.quickTo(svgRef.current, "y", { duration: 1, ease: "power3" })
+
+    const onMouseMove = (e) => {
+        const { clientX, clientY } = e
+        const rect = svgRef.current.getBoundingClientRect()
+        const x = (clientX - (rect.left + rect.width / 2)) / 30
+        const y = (clientY - (rect.top + rect.height / 2)) / 30
+        xTo(x)
+        yTo(y)
+    }
+    window.addEventListener('mousemove', onMouseMove)
+
+    return () => {
+        window.removeEventListener('mousemove', onMouseMove)
+        ScrollTrigger.getAll().forEach((st) => {
+            if (st.trigger === section) st.kill()
+        })
+    }
+}, [])
 
   return (
     <section
@@ -163,7 +180,7 @@ export default function ArpanetSection() {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
         {/* ── Left: SVG ARPANET Map ─────────────────────────────────────────── */}
-        <div className="relative w-full aspect-square max-w-lg mx-auto lg:mx-0">
+        <div className="relative w-full aspect-square max-w-lg mx-auto lg:mx-0 order-2 lg:order-1 scale-90 sm:scale-100">
           <svg
             ref={svgRef}
             viewBox="0 0 100 100"
@@ -236,24 +253,24 @@ export default function ArpanetSection() {
         </div>
 
         {/* ── Right: Text + Timeline ────────────────────────────────────────── */}
-        <div ref={textRef} className="flex flex-col gap-8">
+        <div ref={textRef} className="flex flex-col gap-6 md:gap-8 order-1 lg:order-2 text-center lg:text-left pt-12 lg:pt-0">
           <div>
             <span className="year-badge">1960s – 1980s</span>
-            <div className="section-divider mt-4" />
-            <h2 className="text-4xl md:text-5xl font-display font-bold mt-4 leading-tight" style={{ opacity: 0 }}>
+            <div className="section-divider mt-4 mx-auto lg:mx-0" />
+            <h2 className="text-3xl md:text-5xl font-display font-bold mt-4 leading-tight" style={{ opacity: 0 }}>
               The{' '}
               <span className="gradient-text-cyber glow-text">First Network</span>
               <br />
               <span className="text-[var(--text-secondary)]">Changes Everything</span>
             </h2>
-            <p className="mt-4 text-[var(--text-secondary)] text-sm leading-relaxed max-w-md">
+            <p className="mt-4 text-[var(--text-secondary)] text-xs md:text-sm leading-relaxed max-w-md mx-auto lg:mx-0">
               In a Cold War laboratory, four computers began to talk. What started as a military
               experiment became the foundation of a global civilisation.
             </p>
           </div>
 
           {/* Milestone timeline */}
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col gap-4 max-w-md mx-auto lg:mx-0 text-left">
             {MILESTONES.map((m, i) => (
               <div
                 key={m.year}
@@ -262,17 +279,17 @@ export default function ArpanetSection() {
                 className="flex gap-4 items-start group"
               >
                 {/* Year column */}
-                <div className="flex-shrink-0 w-14 text-right">
-                  <span className="font-mono text-xs text-[var(--cyber-green)] font-bold">{m.year}</span>
+                <div className="flex-shrink-0 w-12 text-right">
+                  <span className="font-mono text-[10px] md:text-xs text-[var(--cyber-green)] font-bold">{m.year}</span>
                 </div>
                 {/* Dot + line */}
                 <div className="flex flex-col items-center gap-1 flex-shrink-0">
-                  <div className="w-2.5 h-2.5 rounded-full bg-[var(--cyber-green)] shadow-[0_0_8px_var(--cyber-green)] mt-0.5" />
-                  {i < MILESTONES.length - 1 && <div className="w-px flex-1 min-h-[24px] bg-[var(--border-glow)]" />}
+                  <div className="w-2 h-2 rounded-full bg-[var(--cyber-green)] shadow-[0_0_8px_var(--cyber-green)] mt-1" />
+                  {i < MILESTONES.length - 1 && <div className="w-px flex-1 min-h-[20px] bg-[var(--border-glow)]" />}
                 </div>
                 {/* Content */}
                 <div className="pb-4">
-                  <div className="text-sm font-semibold text-[var(--text-primary)] group-hover:text-[var(--cyber-green)] transition-colors duration-200">
+                  <div className="text-xs md:text-sm font-semibold text-[var(--text-primary)] group-hover:text-[var(--cyber-green)] transition-colors duration-200">
                     {m.title}
                   </div>
                   <div className="text-xs text-[var(--text-muted)] mt-1 leading-relaxed">{m.desc}</div>

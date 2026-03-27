@@ -71,7 +71,7 @@ export default function DotcomSection() {
         { opacity: 0, y: 50, scale: 0.9 },
         {
           opacity: 1, y: 0, scale: 1,
-          duration: 0.7, ease: 'power3.out', delay: i * 0.05,
+          duration: 0.7, ease: 'power4.out', delay: i * 0.05,
           scrollTrigger: { trigger: card, containerAnimation: pinTween, start: 'left 80%' },
         }
       )
@@ -95,10 +95,44 @@ export default function DotcomSection() {
       )
     })
 
-    return () => ScrollTrigger.getAll().forEach((st) => {
-      if (st.trigger === section) st.kill()
+    // Smooth Mouse Parallax for cards
+    const onCardMouseMove = (e) => {
+        const card = e.currentTarget
+        const rect = card.getBoundingClientRect()
+        const x = (e.clientX - (rect.left + rect.width / 2)) / 10
+        const y = (e.clientY - (rect.top + rect.height / 2)) / 10
+        gsap.to(card, {
+            rotationY: x,
+            rotationX: -y,
+            duration: 0.6,
+            ease: 'power4.out'
+        })
+    }
+    const onCardMouseLeave = (e) => {
+        gsap.to(e.currentTarget, {
+            rotationY: 0,
+            rotationX: 0,
+            duration: 0.8,
+            ease: 'power4.out'
+        })
+    }
+    cardsRef.current.forEach(card => {
+        if (!card) return
+        card.addEventListener('mousemove', onCardMouseMove)
+        card.addEventListener('mouseleave', onCardMouseLeave)
     })
-  }, [])
+
+    return () => {
+        ScrollTrigger.getAll().forEach((st) => {
+            if (st.trigger === section) st.kill()
+        })
+        cardsRef.current.forEach(card => {
+            if (!card) return
+            card.removeEventListener('mousemove', onCardMouseMove)
+            card.removeEventListener('mouseleave', onCardMouseLeave)
+        })
+    }
+}, [])
 
   return (
     <section
@@ -113,26 +147,26 @@ export default function DotcomSection() {
       />
 
       {/* Section header (fixed above horizontal track) */}
-      <div className="absolute top-0 left-0 right-0 z-10 pt-24 pb-6 px-12">
-        <div className="flex items-end justify-between">
+      <div className="relative lg:absolute top-0 left-0 right-0 z-10 pt-20 pb-6 px-6 md:px-12">
+        <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6">
           <div>
             <span className="year-badge">1990s — Dot-com Boom</span>
             <div className="section-divider mt-3" />
-            <h2 className="text-4xl md:text-6xl font-display font-bold mt-3 leading-tight">
+            <h2 className="text-3xl md:text-6xl font-display font-bold mt-3 leading-tight text-center md:text-left">
               <span className="gradient-text-fire glow-text-pink">Wild West</span>
               <br />
               <span className="text-[var(--text-primary)]">of the Web</span>
             </h2>
           </div>
           {/* Live counter stats */}
-          <div className="hidden md:grid grid-cols-2 gap-6 text-right">
+          <div className="grid grid-cols-2 gap-4 md:gap-6 text-right w-full md:w-auto">
             {STATS.map((s, i) => (
-              <div key={i} className="glass-card px-4 py-3 min-w-[120px] text-center">
-                <div className="text-2xl font-display font-bold text-[var(--cyber-green)]">
+              <div key={i} className="glass-card px-3 md:px-4 py-2 md:py-3 min-w-[100px] md:min-w-[120px] text-center">
+                <div className="text-xl md:text-2xl font-display font-bold text-[var(--cyber-green)]">
                   <span ref={(el) => (statsRef.current[i] = el)} data-target={s.value}>0</span>
                   <span>{s.suffix}</span>
                 </div>
-                <div className="text-[9px] font-mono text-[var(--text-muted)] tracking-wider uppercase mt-1">{s.label}</div>
+                <div className="text-[8px] md:text-[9px] font-mono text-[var(--text-muted)] tracking-wider uppercase mt-1">{s.label}</div>
               </div>
             ))}
           </div>
@@ -140,7 +174,7 @@ export default function DotcomSection() {
       </div>
 
       {/* ── Horizontal scroll track ───────────────────────────────────────────── */}
-      <div className="flex items-center h-screen pt-52 pb-10 pl-12">
+      <div className="flex items-center h-screen pt-12 md:pt-52 pb-10 pl-6 md:pl-12">
         <div ref={trackRef} className="horizontal-track gap-5">
           {/* Intro card */}
           <div

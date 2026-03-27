@@ -195,26 +195,27 @@ export default function SocialSection() {
             opacity: 1
         })
     }
-    // 5. Interactive Magnetic Phone (3D Tilt)
+    // 5. Interactive Magnetic Phone (3D Tilt with GSAP quickTo for mega-smoothness)
+    const xTo = gsap.quickTo(phoneRef.current, "rotationY", {duration: 1, ease: "power3"})
+    const yTo = gsap.quickTo(phoneRef.current, "rotationX", {duration: 1, ease: "power3"})
+    const mxTo = gsap.quickTo(phoneRef.current, "x", {duration: 1, ease: "power3"})
+    const myTo = gsap.quickTo(phoneRef.current, "y", {duration: 1, ease: "power3"})
+
     const onMouseMove = (e) => {
         const { clientX, clientY } = e
         const rect = phoneRef.current.getBoundingClientRect()
         const centerX = rect.left + rect.width / 2
         const centerY = rect.top + rect.height / 2
         
-        const moveX = (clientX - centerX) / 10
-        const moveY = (clientY - centerY) / 10
+        const moveX = (clientX - centerX) / 12
+        const moveY = (clientY - centerY) / 12
         
-        gsap.to(phoneRef.current, {
-            rotationY: moveX,
-            rotationX: -moveY,
-            x: moveX * 0.5,
-            y: moveY * 0.5,
-            duration: 0.8,
-            ease: 'power2.out'
-        })
+        xTo(moveX)
+        yTo(-moveY)
+        mxTo(moveX * 0.4)
+        myTo(moveY * 0.4)
 
-        // Magnetic Icons push/pull
+        // Magnetic Icons push/pull with smoother interaction
         iconsRef.current.forEach((el) => {
             if (!el) return
             const iconRect = el.getBoundingClientRect()
@@ -222,17 +223,18 @@ export default function SocialSection() {
             const iy = iconRect.top + iconRect.height / 2
             const dist = Math.hypot(clientX - ix, clientY - iy)
             
-            if (dist < 150) {
+            if (dist < 180) {
                 const angle = Math.atan2(clientY - iy, clientX - ix)
-                const push = (150 - dist) * 0.3
+                const push = (180 - dist) * 0.4
                 gsap.to(el, {
                     x: `-=${Math.cos(angle) * push}`,
                     y: `-=${Math.sin(angle) * push}`,
-                    scale: 1.1,
-                    duration: 0.4
+                    scale: 1.15,
+                    duration: 0.6,
+                    ease: 'power2.out'
                 })
             } else {
-                gsap.to(el, { scale: 1, duration: 0.6 })
+                gsap.to(el, { scale: 1, duration: 0.8, ease: 'elastic.out(1, 0.3)' })
             }
         })
     }
@@ -289,45 +291,41 @@ export default function SocialSection() {
         style={{ background: 'radial-gradient(circle, rgba(99,102,241,0.09) 0%, transparent 65%)' }}
       />
 
-      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
 
         {/* Left: Text + Timeline nav */}
-        <div ref={textRef}>
+        <div ref={textRef} className="order-2 lg:order-1 text-center lg:text-left">
           <div className="reveal-line">
             <span className="year-badge mb-4 inline-block">2000s – 2015</span>
           </div>
-          <div className="section-divider" />
-          <h2 className="text-4xl md:text-6xl font-display font-bold mt-4 leading-tight">
+          <div className="section-divider mx-auto lg:mx-0" />
+          <h2 className="text-3xl md:text-6xl font-display font-bold mt-4 leading-tight">
             <span className="header-word inline-block mr-3">Social.</span>
             <span className="header-word inline-block gradient-text-cyber glow-text mr-3">Mobile.</span>
             <br />
             <span className="header-word inline-block text-[var(--text-secondary)]">Everywhere.</span>
           </h2>
-          <p className="mt-6 text-[var(--text-secondary)] text-sm leading-relaxed max-w-md reveal-line">
+          <p className="mt-6 text-[var(--text-secondary)] text-xs md:text-sm leading-relaxed max-w-md mx-auto lg:mx-0 reveal-line">
             The internet escaped the desktop. Billions of humans put it in their pockets.
             Social networks rose to reshape democracy, culture, and attention itself.
           </p>
 
           {/* Stat chips */}
-          <div className="flex flex-wrap gap-3 mt-8 reveal-line">
+          <div className="flex flex-wrap justify-center lg:justify-start gap-2 md:gap-3 mt-8 reveal-line">
             {[
               { label: 'Active users 2015', value: '3.2', suffix: 'B' },
               { label: 'Mobile internet share', value: '51.3', suffix: '%' },
               { label: 'iOS apps 2015', value: '1.5', suffix: 'M' },
             ].map((s) => (
-              <div key={s.label} className="glass-card px-5 py-3 text-center min-w-[110px] relative overflow-hidden group border-none">
+              <div key={s.label} className="glass-card px-3 md:px-5 py-2 md:py-3 text-center min-w-[90px] md:min-w-[110px] relative overflow-hidden group border-none">
                 {/* Liquid Neon Border */}
                 <div className="absolute inset-0 border border-cyan-400/20 rounded-xl" />
-                <div className="absolute inset-0 border border-cyan-400/40 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 shadow-[inset_0_0_15px_rgba(34,211,238,0.2)]" />
                 
-                {/* Data Pulse Beam */}
-                <div className="stat-card-pulse absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent opacity-0 -translate-x-full pointer-events-none" />
-                
-                <div className="relative z-10 text-xl font-display font-bold text-[var(--cyber-green)] group-hover:scale-110 transition-transform duration-300">
+                <div className="relative z-10 text-lg md:text-xl font-display font-bold text-[var(--cyber-green)]">
                   <span className="social-counter" data-target={parseFloat(s.value)}>0</span>
                   {s.suffix}
                 </div>
-                <div className="relative z-10 text-[9px] font-mono text-[var(--text-muted)] tracking-wide mt-1 uppercase">
+                <div className="relative z-10 text-[7px] md:text-[9px] font-mono text-[var(--text-muted)] tracking-wide mt-1 uppercase">
                   {s.label}
                 </div>
               </div>
@@ -335,7 +333,7 @@ export default function SocialSection() {
           </div>
 
           {/* Clickable year timeline with Liquid Pill */}
-          <div className="year-nav-container mt-10 flex gap-3 flex-wrap reveal-line relative p-1 bg-[rgba(255,255,255,0.02)] rounded-full border border-white/5 w-fit">
+          <div className="year-nav-container mt-10 flex gap-2 md:gap-3 flex-wrap justify-center lg:justify-start reveal-line relative p-1 bg-[rgba(255,255,255,0.02)] rounded-full border border-white/5 w-fit mx-auto lg:mx-0">
             {/* Liquid Nav Pill */}
             <div className="liquid-nav-pill absolute top-1 bottom-1 bg-[var(--cyber-green)] rounded-full shadow-[0_0_16px_rgba(0,212,160,0.4)] opacity-0 pointer-events-none" />
             
@@ -345,7 +343,7 @@ export default function SocialSection() {
                 data-year={yr}
                 data-cursor
                 onClick={() => setActiveYear(yr)}
-                className={`year-btn relative z-10 px-4 py-2 rounded-full font-mono text-xs tracking-wider transition-colors duration-400
+                className={`year-btn relative z-10 px-3 md:px-4 py-1.5 md:py-2 rounded-full font-mono text-[10px] md:text-xs tracking-wider transition-colors duration-400
                   ${activeYear === yr
                     ? 'year-btn-active text-[var(--bg-dark)] font-bold'
                     : 'text-[var(--text-muted)] hover:text-[var(--cyber-green)]'
@@ -357,50 +355,49 @@ export default function SocialSection() {
           </div>
 
           {/* Active year fact */}
-          <div className="mt-4 glass-card px-5 py-4 max-w-md fact-reveal-bubble overflow-hidden relative">
+          <div className="mt-4 glass-card px-4 md:px-5 py-3 md:py-4 max-w-md mx-auto lg:mx-0 fact-reveal-bubble overflow-hidden relative">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-400 opacity-20" />
             <YearFact year={activeYear} />
           </div>
         </div>
 
         {/* Right: Phone + floating app icons */}
-        <div className="relative flex items-center justify-center h-[520px]">
+        <div className="relative flex items-center justify-center h-[400px] md:h-[520px] order-1 lg:order-2 scale-75 sm:scale-100">
           {/* Phone frame */}
           <div
             ref={phoneRef}
-            className="relative z-10 w-48 h-96 rounded-[2.5rem] border-2 border-[rgba(255,255,255,0.12)]
+            className="relative z-10 w-40 md:w-48 h-80 md:h-96 rounded-[2rem] md:rounded-[2.5rem] border-2 border-[rgba(255,255,255,0.12)]
               bg-[rgba(255,255,255,0.04)] backdrop-blur-xl shadow-[0_0_60px_rgba(99,102,241,0.2)] overflow-hidden flex flex-col items-center justify-center transition-transform"
             style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}
           >
             {/* Status bar */}
-            <div className="absolute top-0 left-0 right-0 flex justify-between px-5 pt-3 text-[8px] font-mono text-[var(--text-muted)]">
+            <div className="absolute top-0 left-0 right-0 flex justify-between px-5 pt-3 text-[7px] md:text-[8px] font-mono text-[var(--text-muted)]">
               <span>9:41</span>
               <span>●●●</span>
             </div>
             {/* Notch */}
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-6 bg-[var(--bg-dark)] rounded-b-2xl" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-14 md:w-16 h-5 md:h-6 bg-[var(--bg-dark)] rounded-b-2xl" />
             {/* App grid preview */}
-            <div className="grid grid-cols-3 gap-3 px-5">
+            <div className="grid grid-cols-3 gap-2 md:gap-3 px-4 md:px-5">
               {APPS.slice(0, 9).map((a) => (
                 <div
                   key={a.name}
                   className="flex flex-col items-center gap-1"
-                  title={a.name}
                 >
                   <div
-                    className="w-10 h-10 rounded-2xl flex items-center justify-center text-lg shadow-md"
+                    className="w-8 h-8 md:w-10 md:h-10 rounded-xl md:rounded-2xl flex items-center justify-center text-base md:text-lg shadow-md"
                     style={{ backgroundColor: a.color + '33', border: `1px solid ${a.color}44` }}
                   >
-                    <span style={{ fontSize: '18px' }}>{a.icon}</span>
+                    <span style={{ fontSize: '16px' }}>{a.icon}</span>
                   </div>
-                  <span className="text-[6px] text-[var(--text-muted)] truncate w-full text-center font-mono">
+                  <span className="text-[5px] md:text-[6px] text-[var(--text-muted)] truncate w-full text-center font-mono uppercase">
                     {a.name}
                   </span>
                 </div>
               ))}
             </div>
             {/* Home indicator */}
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-16 h-1 bg-white/30 rounded-full" />
+            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-12 md:w-16 h-1 bg-white/30 rounded-full" />
           </div>
 
           {/* Floating app icons orbiting the phone */}
@@ -408,14 +405,13 @@ export default function SocialSection() {
             <div
               key={app.name}
               ref={(el) => (iconsRef.current[i] = el)}
-              className="absolute flex items-center justify-center w-12 h-12 rounded-2xl text-xl
+              className="absolute flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-xl md:rounded-2xl text-lg md:text-xl
                 glass-card border border-white/10 shadow-lg pointer-events-none"
               style={{
                 left: '50%', top: '50%',
                 transform: 'translate(-50%, -50%)',
                 opacity: 0,
               }}
-              title={app.name}
             >
               {app.icon}
             </div>

@@ -63,7 +63,7 @@ export default function Web3Section() {
       { opacity: 0, y: 60 },
       {
         opacity: 1, y: 0,
-        stagger: 0.12, duration: 1, ease: 'power3.out',
+        stagger: 0.12, duration: 1, ease: 'power4.out',
         scrollTrigger: { trigger: section, start: 'top 65%' },
       }
     )
@@ -93,7 +93,7 @@ export default function Web3Section() {
         opacity: 0,
         y: 30,
         duration: 0.8,
-        ease: 'power3.out',
+        ease: 'power4.out',
         delay: i * 0.1,
         scrollTrigger: { 
           trigger: card, 
@@ -167,7 +167,12 @@ export default function Web3Section() {
     listCard?.addEventListener('mousemove', onListMouseMove)
     listCard?.addEventListener('mouseleave', onListMouseLeave)
 
-    // 5. Interactive Magnetic Orb (Mouse Tracking)
+    // 5. Interactive Magnetic Orb (GSAP quickTo for mega-smoothness)
+    const orbXTo = gsap.quickTo(orbRef.current, "x", {duration: 1, ease: "power3"})
+    const orbYTo = gsap.quickTo(orbRef.current, "y", {duration: 1, ease: "power3"})
+    const orbRXTo = gsap.quickTo(orbRef.current, "rotationX", {duration: 1.2, ease: "power3"})
+    const orbRYTo = gsap.quickTo(orbRef.current, "rotationY", {duration: 1.2, ease: "power3"})
+
     const onMouseMove = (e) => {
         const { clientX, clientY } = e
         const { left, top, width, height } = orbRef.current.getBoundingClientRect()
@@ -177,14 +182,10 @@ export default function Web3Section() {
         const moveX = (clientX - centerX) / 15
         const moveY = (clientY - centerY) / 15
         
-        gsap.to(orbRef.current, {
-            x: moveX,
-            y: moveY,
-            rotationY: moveX * 2,
-            rotationX: -moveY * 2,
-            duration: 0.8,
-            ease: 'power2.out'
-        })
+        orbXTo(moveX)
+        orbYTo(moveY)
+        orbRYTo(moveX * 2)
+        orbRXTo(-moveY * 2)
     }
     window.addEventListener('mousemove', onMouseMove)
 
@@ -261,52 +262,100 @@ export default function Web3Section() {
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
 
         {/* Section header */}
-        <div className="text-center mb-16">
-          <span className="year-badge web3-reveal inline-block mb-6" style={{ borderColor: 'rgba(99,102,241,0.5)', color: '#818cf8' }}>
+        <div className="text-center mb-12 md:mb-16 relative">
+          {/* Title background aura */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[300px] h-[300px] bg-indigo-500/10 blur-[100px] rounded-full pointer-events-none" />
+          
+          <span className="year-badge web3-reveal inline-block mb-4 md:mb-6 relative z-10" style={{ borderColor: 'rgba(99,102,241,0.5)', color: '#818cf8', fontSize: '10px' }}>
             Web3 + AI + Spatial Computing
           </span>
 
           <h2
             ref={titleRef}
-            className="web3-reveal text-5xl md:text-7xl font-display font-bold leading-tight mb-6"
+            className="web3-reveal text-3xl sm:text-4xl md:text-7xl font-display font-bold leading-tight mb-4 md:mb-6 relative z-10"
           >
             <span className="gradient-text-aurora glow-text-purple">The Next</span>
             <br />
             <span className="text-[var(--text-primary)]">Internet</span>
           </h2>
 
-          <p className="web3-reveal text-[var(--text-secondary)] text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+          <p className="web3-reveal text-[var(--text-secondary)] text-xs md:text-base max-w-2xl mx-auto leading-relaxed px-4 relative z-10">
             We are at an inflection point as significant as 1969. Decentralization, AI, and
             spatial computing will rewrite every assumption about how the internet works.
           </p>
         </div>
 
         {/* Globe + Past/Future toggle */}
-        <div className="flex flex-col md:flex-row items-center justify-center gap-12 mb-20">
+        <div className="flex flex-col lg:flex-row items-center justify-center gap-12 lg:gap-24 mb-16 md:20 relative">
+          {/* Subtle Data Stream Connection (Desktop Only) */}
+          <svg className="absolute inset-0 w-full h-full pointer-events-none opacity-20 hidden lg:block" viewBox="0 0 800 400">
+            <path d="M250,200 Q400,100 550,200" fill="none" stroke="url(#stream-grad)" strokeWidth="1" strokeDasharray="5,5" className="animate-pulse" />
+            <defs>
+              <linearGradient id="stream-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#00d4a0" />
+                <stop offset="100%" stopColor="#6366f1" />
+              </linearGradient>
+            </defs>
+          </svg>
 
           {/* Holographic globe */}
-          <div ref={orbRef} className="relative w-52 h-52 flex-shrink-0 flex items-center justify-center">
-            {/* Core globe */}
+          <div ref={orbRef} className="relative w-48 h-48 md:w-64 md:h-64 flex-shrink-0 flex items-center justify-center scale-90 md:scale-100">
+            {/* Core globe aura */}
             <div
-              className="absolute w-40 h-40 rounded-full"
-              style={{
-                background: 'radial-gradient(circle at 35% 35%, rgba(99,102,241,0.5), rgba(0,212,160,0.2) 50%, rgba(3,6,24,0.8) 100%)',
-                border: '1px solid rgba(99,102,241,0.4)',
-              }}
+              className="absolute w-36 h-36 md:w-48 md:h-48 rounded-full blur-3xl opacity-30"
+              style={{ background: 'radial-gradient(circle, #6366f1, #00d4a0)' }}
             />
-            {/* Latitude line */}
-            <div className="orb-ring absolute w-52 h-52 rounded-full border border-[rgba(0,212,160,0.25)]" style={{ transform: 'rotateX(75deg)' }} />
-            {/* Longitude line 1 */}
-            <div className="orb-ring absolute w-52 h-52 rounded-full border border-[rgba(99,102,241,0.25)]" style={{ transform: 'rotateY(75deg)' }} />
-            {/* Longitude line 2 */}
-            <div className="orb-ring absolute w-44 h-44 rounded-full border border-[rgba(0,212,160,0.15)]" style={{ transform: 'rotateY(45deg) rotateX(30deg)' }} />
+            
+            {/* Core globe body */}
+            <div
+              className="absolute w-32 h-32 md:w-44 md:h-44 rounded-full overflow-hidden"
+              style={{
+                background: 'radial-gradient(circle at 35% 35%, rgba(99,102,241,0.5), rgba(0,212,160,0.2) 50%, rgba(3,6,24,0.9) 100%)',
+                border: '1px solid rgba(255, 255, 255, 0.1)',
+                boxShadow: 'inset -5px -5px 20px rgba(0,0,0,0.5), 0 0 30px rgba(99,102,241,0.2)'
+              }}
+            >
+              {/* Internal scanning light */}
+              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-400/20 to-transparent h-1/2 w-full animate-scan-fast" />
+              
+              {/* Custom SVG Globe Icon */}
+              <div className="absolute inset-0 flex items-center justify-center opacity-60 mix-blend-screen p-8">
+                <svg viewBox="0 0 100 100" className="w-full h-full text-cyan-400 stroke-current fill-none stroke-[0.5]">
+                  <circle cx="50" cy="50" r="45" />
+                  <ellipse cx="50" cy="50" rx="45" ry="15" />
+                  <ellipse cx="50" cy="50" rx="15" ry="45" />
+                  <path d="M5,50 L95,50 M50,5 L50,95" />
+                </svg>
+              </div>
+            </div>
+
+            {/* Orbital Rings (Complex Data Shell) */}
+            <div className="orb-ring absolute w-48 h-48 md:w-64 md:h-64 rounded-full border border-dashed border-[rgba(0,212,160,0.3)] opacity-40" style={{ transform: 'rotateX(75deg)' }} />
+            <div className="orb-ring absolute w-48 h-48 md:w-64 md:h-64 rounded-full border border-dashed border-[rgba(99,102,241,0.3)] opacity-40" style={{ transform: 'rotateY(75deg)' }} />
+            <div className="orb-ring absolute w-40 h-40 md:w-56 md:h-56 rounded-full border border-[rgba(0,212,160,0.15)]" style={{ transform: 'rotateY(45deg) rotateX(30deg)' }} />
+            
+            {/* Energy Particle Shell (CSS-only dots) */}
+            <div className="absolute inset-0 animate-spin-slow">
+              {[...Array(8)].map((_, i) => (
+                <div 
+                  key={i}
+                  className="absolute w-1 h-1 bg-cyan-400 rounded-full shadow-[0_0_8px_#22d3ee]"
+                  style={{
+                    top: '50%', left: '50%',
+                    transform: `rotate(${i * 45}deg) translate(80px, 0)`
+                  }}
+                />
+              ))}
+            </div>
 
             {/* Pulse rings */}
-            <div className="absolute w-52 h-52 rounded-full border border-[rgba(99,102,241,0.15)] animate-ping" style={{ animationDuration: '3s' }} />
-            <div className="absolute w-64 h-64 rounded-full border border-[rgba(0,212,160,0.08)] animate-ping" style={{ animationDuration: '4s', animationDelay: '0.5s' }} />
+            <div className="absolute w-48 h-48 md:w-64 md:h-64 rounded-full border border-[rgba(99,102,241,0.15)] animate-ping-slow" />
+            <div className="absolute w-60 h-60 md:w-80 md:h-80 rounded-full border border-[rgba(0,212,160,0.08)] animate-ping" style={{ animationDelay: '0.5s' }} />
 
-            {/* Center star */}
-            <div className="relative z-10 text-3xl">🌐</div>
+            {/* Interaction text hint */}
+            <div className="absolute -bottom-12 md:-bottom-16 text-[8px] font-mono text-[var(--text-muted)] tracking-[0.4em] uppercase opacity-40 animate-pulse">
+              Syncing Reality...
+            </div>
           </div>
 
           {/* Past vs Future toggle */}
@@ -331,27 +380,52 @@ export default function Web3Section() {
             </div>
 
             {/* Dynamic list card with SVG border + Mouse Glow */}
-            <div className="toggle-container-card glass-card p-5 space-y-2 relative transition-all duration-300 overflow-hidden">
+            <div className="toggle-container-card glass-card p-6 md:p-8 space-y-4 relative transition-all duration-300 overflow-hidden min-h-[220px] md:min-h-[260px] flex flex-col justify-center">
               {/* Interactive Glow */}
-              <div className="list-card-glow absolute w-[200px] h-[200px] rounded-full blur-[80px] pointer-events-none opacity-0 z-0 bg-indigo-500/20" style={{ left: 0, top: 0 }} />
+              <div className="list-card-glow absolute w-[250px] h-[250px] rounded-full blur-[100px] pointer-events-none opacity-0 z-0 bg-indigo-500/30" style={{ left: 0, top: 0 }} />
               
+              {/* Scanning light line */}
+              <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent animate-scan-y z-10" />
+
+              {/* Data stream dots (SVG) */}
+              <div className="absolute right-4 top-4 opacity-20 hidden md:block">
+                <svg width="24" height="24" viewBox="0 0 24 24" className="text-cyan-400 fill-current animate-pulse">
+                  <rect x="0" y="0" width="4" height="4" />
+                  <rect x="8" y="0" width="4" height="4" />
+                  <rect x="16" y="0" width="4" height="4" />
+                  <rect x="0" y="8" width="4" height="4" />
+                  <rect x="8" y="8" width="4" height="4" />
+                  <rect x="16" y="8" width="4" height="4" />
+                </svg>
+              </div>
+
               {/* SVG Border Draw Overlay */}
               <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 100 100" preserveAspectRatio="none">
                 <rect x="0" y="0" width="100" height="100" fill="none" className="card-border-path" stroke="rgba(99,102,241,0.3)" strokeWidth="0.5" rx="4" ry="4" />
+                {/* Corner highlights */}
+                <path d="M0,10 L0,0 L10,0" fill="none" stroke="#22d3ee" strokeWidth="1" />
+                <path d="M90,100 L100,100 L100,90" fill="none" stroke="#6366f1" strokeWidth="1" />
               </svg>
 
               {PAST_PRESENT[toggle].items.map((item, i) => (
                 <div
                   key={item}
-                  className="toggle-list-item relative z-10 flex items-center gap-2 text-xs font-mono text-[var(--text-secondary)]"
+                  className="toggle-list-item relative z-10 flex items-center gap-3 text-[10px] md:text-sm font-mono text-[var(--text-secondary)] group hover:text-[var(--text-primary)] transition-colors"
                 >
                   <span
-                    className="w-1.5 h-1.5 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: PAST_PRESENT[toggle].accent }}
+                    className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full flex-shrink-0 shadow-[0_0_8px_currentColor] group-hover:scale-125 transition-transform"
+                    style={{ backgroundColor: PAST_PRESENT[toggle].accent, color: PAST_PRESENT[toggle].accent }}
                   />
-                  {item}
+                  <span className="opacity-80 group-hover:opacity-100">{item}</span>
+                  <div className="flex-1 h-[1px] bg-white/5 group-hover:bg-white/10 ml-2" />
                 </div>
               ))}
+              
+              {/* Bottom status line */}
+              <div className="pt-4 mt-2 border-t border-white/5 flex justify-between items-center opacity-40 text-[7px] md:text-[9px] font-mono uppercase tracking-widest">
+                <span>Protocol: {toggle.toUpperCase()}</span>
+                <span className="animate-pulse">Live // Encryption Active</span>
+              </div>
             </div>
           </div>
         </div>

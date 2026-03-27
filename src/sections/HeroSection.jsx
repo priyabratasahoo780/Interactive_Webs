@@ -207,11 +207,14 @@ export default function HeroSection({ onStartTour }) {
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.1)
     scene.add(ambientLight)
 
-    //  Mouse parallax 
+    //  Mouse parallax with Lerp
     let mouseX = 0, mouseY = 0
+    let targetMouseX = 0, targetMouseY = 0
+    const lerp = (start, end, amt) => (1 - amt) * start + amt * end
+
     const onMouse = (e) => {
-      mouseX = (e.clientX / window.innerWidth - 0.5) * 2
-      mouseY = (e.clientY / window.innerHeight - 0.5) * 2
+      targetMouseX = (e.clientX / window.innerWidth - 0.5) * 2
+      targetMouseY = (e.clientY / window.innerHeight - 0.5) * 2
     }
     window.addEventListener('mousemove', onMouse)
 
@@ -237,12 +240,16 @@ export default function HeroSection({ onStartTour }) {
 
       const vFactor = 1 + Math.abs(velocityRef.current / 400)
       
+      // Smoothly interpolate mouse values
+      mouseX = lerp(mouseX, targetMouseX, 0.05)
+      mouseY = lerp(mouseY, targetMouseY, 0.05)
+
       networkGroups.forEach(group => {
         const layer = group.userData
         
         // Parallax + Movement
-        group.rotation.y = t * (0.02 * layer.speed) + mouseX * (0.1 * layer.speed)
-        group.rotation.x = mouseY * (0.05 * layer.speed) + scrollY * (0.0001)
+        group.rotation.y = t * (0.02 * layer.speed) + mouseX * (0.15 * layer.speed)
+        group.rotation.x = mouseY * (0.08 * layer.speed) + scrollY * (0.0001)
 
         // Update Packets
         layer.packets.forEach(p => {
@@ -294,7 +301,7 @@ export default function HeroSection({ onStartTour }) {
       // Year badge slides in
       .fromTo(yearRef.current,
         { opacity: 0, y: 20, filter: 'blur(8px)' },
-        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.8, ease: 'power3.out' }
+        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.8, ease: 'power4.out' }
       )
       // Heading words stagger up
       .fromTo(heading?.querySelectorAll('.word') || [],
@@ -305,7 +312,7 @@ export default function HeroSection({ onStartTour }) {
       // Subtitle fades + slides
       .fromTo(subRef.current,
         { opacity: 0, y: 30, filter: 'blur(6px)' },
-        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.9, ease: 'power3.out' },
+        { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.9, ease: 'power4.out' },
         '-=0.6'
       )
       // CTA button scales in
@@ -362,7 +369,7 @@ export default function HeroSection({ onStartTour }) {
         {/* Main heading */}
         <h1
           ref={headingRef}
-          className="text-5xl md:text-7xl lg:text-8xl font-display font-bold leading-[1.08] mb-6"
+          className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-display font-bold leading-[1.08] mb-6"
           style={{ perspective: '600px' }}
         >
           <span className="gradient-text-aurora glow-text">The Evolution</span>
@@ -374,7 +381,7 @@ export default function HeroSection({ onStartTour }) {
         {/* Subtitle */}
         <p
           ref={subRef}
-          className="text-base md:text-xl text-[var(--text-secondary)] font-light max-w-2xl mx-auto leading-relaxed mb-10"
+          className="text-sm md:text-xl text-[var(--text-secondary)] font-light max-w-2xl mx-auto leading-relaxed mb-8 md:mb-10"
           style={{ opacity: 0 }}
         >
           From four nodes on ARPANET to a world of five billion users —
@@ -382,13 +389,13 @@ export default function HeroSection({ onStartTour }) {
         </p>
 
         {/* CTA */}
-        <div ref={ctaRef} className="flex items-center justify-center gap-4" style={{ opacity: 0 }}>
+        <div ref={ctaRef} className="flex flex-col sm:flex-row items-center justify-center gap-4 px-4" style={{ opacity: 0 }}>
           <button
             data-cursor
             onClick={() => document.getElementById('arpanet')?.scrollIntoView({ behavior: 'smooth' })}
-            className="group relative px-8 py-4 rounded-full font-mono text-sm tracking-wider overflow-hidden
-              bg-gradient-to-r from-[var(--cyber-green)] to-[#00a07a] text-[var(--bg-dark)] font-semibold
-              hover:shadow-[0_0_40px_rgba(0,212,160,0.4)] transition-all duration-300"
+            className="w-full sm:w-auto group relative px-8 py-4 rounded-full font-mono text-[10px] md:text-sm tracking-widest overflow-hidden
+              bg-gradient-to-r from-[var(--cyber-green)] to-[#00a07a] text-[var(--bg-dark)] font-bold
+              hover:shadow-[0_0_40px_rgba(0,212,160,0.4)] transition-all duration-300 uppercase"
           >
             <span className="relative z-10">Begin the Journey</span>
             <span className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
@@ -397,10 +404,10 @@ export default function HeroSection({ onStartTour }) {
           <button
             data-cursor
             onClick={onStartTour}
-            className="group flex items-center gap-3 px-8 py-4 rounded-full border border-white/10 hover:border-[var(--cyber-green)] hover:bg-[var(--cyber-green-dim)] transition-all duration-300"
+            className="w-full sm:w-auto group flex items-center justify-center gap-3 px-8 py-4 rounded-full border border-white/10 hover:border-[var(--cyber-green)] hover:bg-[var(--cyber-green-dim)] transition-all duration-300"
           >
-            <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center group-hover:border-[var(--cyber-green)]">
-                <div className="w-2 h-2 bg-white rounded-full group-hover:bg-[var(--cyber-green)] animate-ping" />
+            <div className="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center group-hover:border-[var(--cyber-green)]">
+                <div className="w-1.5 h-1.5 bg-white rounded-full group-hover:bg-[var(--cyber-green)] animate-ping" />
             </div>
             <span className="font-mono text-[10px] tracking-widest uppercase">Start Guided Tour</span>
           </button>
