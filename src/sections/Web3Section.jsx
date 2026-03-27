@@ -86,21 +86,21 @@ export default function Web3Section() {
       duration: 2, yoyo: true, repeat: -1, ease: 'sine.inOut',
     })
 
-    // 4. Cards stagger in - Simplified for reliability
+    // 4. Cards reveal - Fail-safe .from() approach
     cardsRef.current.forEach((card, i) => {
       if (!card) return
-      gsap.fromTo(card,
-        { opacity: 0, y: 30 },
-        {
-          opacity: 1, y: 0,
-          duration: 0.8, ease: 'power3.out', delay: i * 0.1,
-          scrollTrigger: { 
-            trigger: card, 
-            start: 'top 92%',
-            toggleActions: 'play none none reverse'
-          },
-        }
-      )
+      gsap.from(card, {
+        opacity: 0,
+        y: 30,
+        duration: 0.8,
+        ease: 'power3.out',
+        delay: i * 0.1,
+        scrollTrigger: { 
+          trigger: card, 
+          start: 'top 95%',
+          toggleActions: 'play none none reverse'
+        },
+      })
     })
 
     // 8. Advanced SVG Constellation (Connecting Cards to Orb)
@@ -151,18 +151,29 @@ export default function Web3Section() {
             opacity: 1,
             filter: 'blur(0px)',
             y: 0,
-            stagger: 0.02,
+            stagger: 0.015,
             duration: 0.8,
             ease: 'back.out(1.7)',
             scrollTrigger: {
                 trigger: quote,
-                start: 'top 85%',
+                start: 'top 92%',
             },
             onStart: () => {
                 gsap.set(quote.querySelectorAll('.quote-char'), { filter: 'blur(10px)', y: 20 })
             }
         })
     }
+
+    // 9. Initial List Stagger
+    gsap.from('.toggle-list-item', {
+        opacity: 0,
+        x: -20,
+        stagger: 0.05,
+        duration: 0.5,
+        ease: 'power2.out',
+        delay: 0.5,
+        scrollTrigger: { trigger: '.glass-card', start: 'top 90%' }
+    })
 
     // 5. Interactive Magnetic Orb (Mouse Tracking)
     const onMouseMove = (e) => {
@@ -215,6 +226,25 @@ export default function Web3Section() {
       window.removeEventListener('mousemove', onMouseMove)
     }
   }, [])
+
+  // 10. Toggle Animation Logic
+  const handleToggle = (t) => {
+    if (t === toggle) return
+    setToggle(t)
+    
+    // Stretchy Pill Animation (if we had a separate pill element, but here we use bg color)
+    // We'll animate the list items instead
+    gsap.fromTo('.toggle-list-item', 
+        { opacity: 0, x: t === 'future' ? 20 : -20 },
+        { opacity: 1, x: 0, stagger: 0.05, duration: 0.4, ease: 'back.out(1.2)' }
+    )
+    
+    // Pulse the section glow
+    gsap.to(sectionRef.current, {
+        backgroundColor: t === 'future' ? '#030618' : '#020410',
+        duration: 0.6
+    })
+  }
 
   return (
     <section
@@ -296,10 +326,10 @@ export default function Web3Section() {
                 <button
                   key={t}
                   data-cursor
-                  onClick={() => setToggle(t)}
-                  className={`flex-1 py-2 px-4 rounded-full font-mono text-xs tracking-widest uppercase transition-all duration-400
+                  onClick={() => handleToggle(t)}
+                  className={`flex-1 py-2 px-4 rounded-full font-mono text-xs tracking-widest uppercase transition-all duration-400 relative z-10
                     ${toggle === t
-                      ? 'text-[var(--bg-dark)] font-bold shadow-lg'
+                      ? 'text-[var(--bg-dark)] font-bold'
                       : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
                     }`}
                   style={toggle === t ? { backgroundColor: PAST_PRESENT[t].accent } : {}}
@@ -314,8 +344,7 @@ export default function Web3Section() {
               {PAST_PRESENT[toggle].items.map((item, i) => (
                 <div
                   key={item}
-                  className="flex items-center gap-2 text-xs font-mono text-[var(--text-secondary)]"
-                  style={{ transitionDelay: `${i * 40}ms` }}
+                  className="toggle-list-item flex items-center gap-2 text-xs font-mono text-[var(--text-secondary)]"
                 >
                   <span
                     className="w-1.5 h-1.5 rounded-full flex-shrink-0"
@@ -359,7 +388,7 @@ export default function Web3Section() {
                 })
               }}
               className="glass-card p-6 group cursor-pointer transition-colors z-20"
-              style={{ opacity: 0, perspective: '1000px', transformStyle: 'preserve-3d' }}
+              style={{ perspective: '1000px', transformStyle: 'preserve-3d' }}
             >
               <div className="text-3xl mb-4 group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 transform-gpu">{p.icon}</div>
               <h3 className="text-base font-display font-semibold mb-2 group-hover:text-[var(--electric-purple)] transition-colors duration-300">
