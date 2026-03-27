@@ -22,6 +22,7 @@ export default function Web3Section() {
   const sectionRef  = useRef(null)
   const titleRef    = useRef(null)
   const orbRef      = useRef(null)
+  const centerRef   = useRef(null)
   const cardsRef    = useRef([])
   const [toggle, setToggle] = useState('future')
   const velocity = useScrollVelocity()

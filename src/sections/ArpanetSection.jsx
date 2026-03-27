@@ -40,6 +40,7 @@ const MILESTONES = [
 export default function ArpanetSection() {
   const sectionRef = useRef(null)
   const svgRef = useRef(null)
+  const cardRef = useRef(null)
   const textRef = useRef(null)
   const milestonesRef = useRef([])
   const timelineRef = useRef(null)
