@@ -93,8 +93,8 @@ export default function Web3Section() {
         { opacity: 0, scale: 0.8, filter: 'blur(10px)' },
         {
           opacity: 1, scale: 1, filter: 'blur(0px)',
-          duration: 1, ease: 'power4.out', delay: i * 0.1,
-          scrollTrigger: { trigger: card, start: 'top 85%' },
+          duration: 1.2, ease: 'power4.out', delay: i * 0.15,
+          scrollTrigger: { trigger: card, start: 'top 90%' },
         }
       )
     })
@@ -105,9 +105,9 @@ export default function Web3Section() {
         cardsRef.current.forEach((card, i) => {
             if (!card) return
             const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-            path.setAttribute('class', 'constellation-path opacity-0')
-            path.setAttribute('stroke', 'rgba(99,102,241,0.2)')
-            path.setAttribute('stroke-width', '0.5')
+            path.setAttribute('class', 'constellation-path opacity-100')
+            path.setAttribute('stroke', 'rgba(99,102,241,0.5)')
+            path.setAttribute('stroke-width', '1.5')
             path.setAttribute('fill', 'none')
             svgLayer.appendChild(path)
 
@@ -231,7 +231,7 @@ export default function Web3Section() {
       <div className="particle-field absolute inset-0 pointer-events-none overflow-hidden" />
       
       {/* SVG Constellation Layer */}
-      <svg className="constellation-svg absolute inset-0 w-full h-full pointer-events-none z-0" />
+      <svg className="constellation-svg absolute inset-0 w-full h-full pointer-events-none z-10" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
 
