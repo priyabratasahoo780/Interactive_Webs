@@ -4,7 +4,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useScrollVelocity } from '../hooks/useScrollVelocity'
 
-// ── Static ARPANET topology nodes and edges ──────────────────────────────────
+// Static ARPANET topology nodes and edges
 const NODES = [
   { id: 'ucla',   x: 18,  y: 58, label: 'UCLA',     year: '1969' },
   { id: 'sri',    x: 14,  y: 30, label: 'SRI',      year: '1969' },
@@ -63,7 +63,7 @@ export default function ArpanetSection() {
     const svg = svgRef.current
     if (!section || !svg) return
 
-    // ── 1. Draw edges one by one ──────────────────────────────────────────────
+    // 1. Draw edges one by onE
     const lines = svg.querySelectorAll('.arpa-edge')
     lines.forEach((line) => {
       const x1 = parseFloat(line.getAttribute('x1') || '0')
@@ -74,12 +74,12 @@ export default function ArpanetSection() {
       gsap.set(line, { strokeDasharray: len, strokeDashoffset: len })
     })
 
-    // ── 2. Nodes start invisible ──────────────────────────────────────────────
+    // 2. Nodes start invisible
     const circles = svg.querySelectorAll('.arpa-node-circle')
     const labels  = svg.querySelectorAll('.arpa-node-label')
     gsap.set([circles, labels], { opacity: 0, scale: 0, transformOrigin: 'center' })
 
-    // ── 3. Pin + ScrollTrigger timeline ──────────────────────────────────────
+    // 3. Pin + ScrollTrigger timeline 
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: section,
@@ -109,7 +109,7 @@ export default function ArpanetSection() {
       stagger: 0.06, duration: 0.1,
     }, '<0.1')
 
-    // ── 4. Text reveals staggered with the pinned scroll ─────────────────────
+    //4. Text reveals staggered with the pinned scroll 
     milestonesRef.current.forEach((el, i) => {
       if (!el) return
       tl.fromTo(el,
@@ -119,7 +119,7 @@ export default function ArpanetSection() {
       )
     })
 
-    // ── 5. Heading big reveal ─────────────────────────────────────────────────
+    // 5. Heading big reveal 
     const headEl = textRef.current?.querySelector('h2')
     if (headEl) {
       gsap.fromTo(headEl,
@@ -131,7 +131,7 @@ export default function ArpanetSection() {
       )
     }
 
-    // ── 6. Pulse animation on nodes (CSS class driven) ────────────────────────
+    // 6. Pulse animation on nodes (CSS class driven)
     circles.forEach((c) => {
       gsap.to(c, {
         attr: { r: '+=' + (Math.random() * 2 + 0.5) },
@@ -162,80 +162,86 @@ export default function ArpanetSection() {
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
-        {/* ── Left: SVG ARPANET Map ─────────────────────────────────────────── */}
+        {/*  Left: SVG ARPANET Map  */}
         <div className="relative w-full aspect-square max-w-lg mx-auto lg:mx-0">
-          <svg
-            ref={svgRef}
-            viewBox="0 0 100 100"
-            className="w-full h-full"
-            style={{ overflow: 'visible' }}
+          <div 
+            ref={cardRef} 
+            data-guide-id="arpanet-main"
+            className="glass-card p-12 relative overflow-hidden group border-green-500/20"
           >
-            {/* Edges */}
-            {EDGES.map(([a, b], i) => {
-              const from = NODES.find((n) => n.id === a)
-              const to   = NODES.find((n) => n.id === b)
-              if (!from || !to) return null
-              return (
-                <line
-                  key={i}
-                  className="arpa-edge"
-                  x1={from.x} y1={from.y}
-                  x2={to.x}   y2={to.y}
-                  stroke="rgba(0,212,160,0.35)"
-                  strokeWidth="0.4"
-                  pathLength="1"
-                />
-              )
-            })}
+            <svg
+              ref={svgRef}
+              viewBox="0 0 100 100"
+              className="w-full h-full"
+              style={{ overflow: 'visible' }}
+            >
+              {/* Edges */}
+              {EDGES.map(([a, b], i) => {
+                const from = NODES.find((n) => n.id === a)
+                const to   = NODES.find((n) => n.id === b)
+                if (!from || !to) return null
+                return (
+                  <line
+                    key={i}
+                    className="arpa-edge"
+                    x1={from.x} y1={from.y}
+                    x2={to.x}   y2={to.y}
+                    stroke="rgba(0,212,160,0.35)"
+                    strokeWidth="0.4"
+                    pathLength="1"
+                  />
+                )
+              })}
 
-            {/* Nodes */}
-            {NODES.map((n) => (
-              <g key={n.id}>
-                {/* Glow ring */}
-                <circle
-                  cx={n.x} cy={n.y} r="2.8"
-                  fill="none"
-                  stroke="rgba(0,212,160,0.2)"
-                  strokeWidth="0.6"
-                  className="arpa-node-circle"
-                />
-                {/* Core dot */}
-                <circle
-                  cx={n.x} cy={n.y} r="1.4"
-                  fill="var(--cyber-green)"
-                  className="arpa-node-circle"
-                />
-                {/* Label */}
-                <text
-                  x={n.x + 2.2} y={n.y + 0.5}
-                  fontSize="2.5"
-                  fill="rgba(240,244,255,0.7)"
-                  fontFamily="JetBrains Mono, monospace"
-                  className="arpa-node-label"
-                >
-                  {n.label}
-                </text>
-                <text
-                  x={n.x + 2.2} y={n.y + 2.8}
-                  fontSize="1.8"
-                  fill="rgba(0,212,160,0.5)"
-                  fontFamily="JetBrains Mono, monospace"
-                  className="arpa-node-label"
-                >
-                  {n.year}
-                </text>
-              </g>
-            ))}
-          </svg>
+              {/* Nodes */}
+              {NODES.map((n) => (
+                <g key={n.id}>
+                  {/* Glow ring */}
+                  <circle
+                    cx={n.x} cy={n.y} r="2.8"
+                    fill="none"
+                    stroke="rgba(0,212,160,0.2)"
+                    strokeWidth="0.6"
+                    className="arpa-node-circle"
+                  />
+                  {/* Core dot */}
+                  <circle
+                    cx={n.x} cy={n.y} r="1.4"
+                    fill="var(--cyber-green)"
+                    className="arpa-node-circle"
+                  />
+                  {/* Label */}
+                  <text
+                    x={n.x + 2.2} y={n.y + 0.5}
+                    fontSize="2.5"
+                    fill="rgba(240,244,255,0.7)"
+                    fontFamily="JetBrains Mono, monospace"
+                    className="arpa-node-label"
+                  >
+                    {n.label}
+                  </text>
+                  <text
+                    x={n.x + 2.2} y={n.y + 2.8}
+                    fontSize="1.8"
+                    fill="rgba(0,212,160,0.5)"
+                    fontFamily="JetBrains Mono, monospace"
+                    className="arpa-node-label"
+                  >
+                    {n.year}
+                  </text>
+                </g>
+              ))}
+            </svg>
 
-          {/* Floating info chip */}
-          <div className="absolute bottom-2 left-2 glass-card px-4 py-2 text-xs font-mono">
-            <div className="text-[var(--cyber-green)]">ARPANET</div>
-            <div className="text-[var(--text-muted)]">1969 — 12 nodes by 1972</div>
+            {/* Floating info chip */}
+            <div className="absolute bottom-2 left-2 glass-card px-4 py-2 text-xs font-mono">
+              <div data-guide-id="arpanet-info-1" className="text-[var(--cyber-green)]">ARPANET</div>
+              <div data-guide-id="arpanet-info-2" className="text-[var(--text-muted)]">1969 — 12 nodes by 1972</div>
+            </div>
           </div>
         </div>
 
-        {/* ── Right: Text + Timeline ────────────────────────────────────────── */}
+        {/* Right: Text + Timeline */}
         <div ref={textRef} className="flex flex-col gap-8">
           <div>
             <span className="year-badge">1960s – 1980s</span>

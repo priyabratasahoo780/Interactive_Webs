@@ -30,7 +30,6 @@ export default function SocialSection() {
   const velocity = useScrollVelocity()
   const orbitTlRef = useRef([])
 
-  // Dynamic timeScale for floating elements
   useEffect(() => {
     orbitTlRef.current.forEach(tl => {
         const targetScale = 1 + Math.abs(velocity / 500)
@@ -45,7 +44,6 @@ export default function SocialSection() {
     const section = sectionRef.current
     if (!section) return
 
-    // ── 1. Reveal heading ────────────────────────────────────────────────────
     gsap.fromTo(textRef.current?.querySelectorAll('.reveal-line'),
       { opacity: 0, y: 50 },
       {
@@ -55,7 +53,6 @@ export default function SocialSection() {
       }
     )
 
-    // ── 2. Phone frame slides in ─────────────────────────────────────────────
     gsap.fromTo(phoneRef.current,
       { opacity: 0, y: 80, rotateY: -15 },
       {
@@ -65,11 +62,10 @@ export default function SocialSection() {
       }
     )
 
-    // ── 3. App icons orbit in with stagger ──────────────────────────────────
     iconsRef.current.forEach((el, i) => {
       if (!el) return
       const angle = (i / APPS.length) * Math.PI * 2
-      const radius = Math.random() * 40 + 60 // 60–100% of container
+      const radius = Math.random() * 40 + 60
       gsap.fromTo(el,
         { opacity: 0, x: 0, y: 0, scale: 0 },
         {
@@ -82,7 +78,6 @@ export default function SocialSection() {
           scrollTrigger: { trigger: section, start: 'top 50%' },
         }
       )
-      // Continuous float
       const floatTl = gsap.to(el, {
         y: `+=${8 + Math.random() * 8}`,
         duration: 2 + Math.random() * 2,
@@ -94,7 +89,6 @@ export default function SocialSection() {
       orbitTlRef.current.push(floatTl)
     })
 
-    // ── 4. Stats counter ─────────────────────────────────────────────────────
     document.querySelectorAll('.social-counter').forEach((el) => {
       const target = parseFloat(el.dataset.target)
       gsap.to({ val: 0 }, {
@@ -116,39 +110,34 @@ export default function SocialSection() {
       ref={sectionRef}
       className="section relative min-h-screen bg-[var(--bg-dark)] flex items-center py-24"
     >
-      {/* Purple radial glow */}
       <div
         className="absolute right-0 top-1/2 -translate-y-1/2 w-[700px] h-[700px] pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(99,102,241,0.09) 0%, transparent 65%)' }}
       />
 
       <div className="relative z-10 w-full max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-
-        {/* ── Left: Text + Timeline nav ─────────────────────────────────────── */}
         <div ref={textRef}>
           <div className="reveal-line">
             <span className="year-badge mb-4 inline-block">2000s – 2015</span>
           </div>
           <div className="section-divider" />
-          <h2 className="text-4xl md:text-6xl font-display font-bold mt-4 leading-tight reveal-line">
+          <h2 data-guide-id="social-title" className="text-4xl md:text-6xl font-display font-bold mt-4 leading-tight reveal-line">
             Social.{' '}
             <span className="gradient-text-cyber glow-text">Mobile.</span>
             <br />
             <span className="text-[var(--text-secondary)]">Everywhere.</span>
           </h2>
-          <p className="mt-6 text-[var(--text-secondary)] text-sm leading-relaxed max-w-md reveal-line">
+          <p data-guide-id="social-desc" className="mt-6 text-[var(--text-secondary)] text-sm leading-relaxed max-w-md reveal-line">
             The internet escaped the desktop. Billions of humans put it in their pockets.
-            Social networks rose to reshape democracy, culture, and attention itself.
           </p>
 
-          {/* Stat chips */}
           <div className="flex flex-wrap gap-3 mt-8 reveal-line">
             {[
-              { label: 'Active users 2015', value: '3.2', suffix: 'B' },
-              { label: 'Mobile internet share', value: '51.3', suffix: '%' },
-              { label: 'iOS apps 2015', value: '1.5', suffix: 'M' },
+              { label: 'Active users 2015', value: '3.2', suffix: 'B', id: 'social-stat-1' },
+              { label: 'Mobile internet share', value: '51.3', suffix: '%', id: 'social-stat-2' },
+              { label: 'iOS apps 2015', value: '1.5', suffix: 'M', id: 'social-stat-3' },
             ].map((s) => (
-              <div key={s.label} className="glass-card px-5 py-3 text-center min-w-[110px]">
+              <div key={s.label} data-guide-id={s.id} className="glass-card px-5 py-3 text-center min-w-[110px]">
                 <div className="text-xl font-display font-bold text-[var(--cyber-green)]">
                   <span className="social-counter" data-target={parseFloat(s.value)}>0</span>
                   {s.suffix}
@@ -160,12 +149,12 @@ export default function SocialSection() {
             ))}
           </div>
 
-          {/* Clickable year timeline */}
           <div className="mt-10 flex gap-3 flex-wrap reveal-line">
             {TIMELINE_YEARS.map((yr) => (
               <button
                 key={yr}
                 data-cursor
+                data-guide-id={`social-year-${yr}`}
                 onClick={() => setActiveYear(yr)}
                 className={`px-4 py-2 rounded-full font-mono text-xs tracking-wider transition-all duration-300 border
                   ${activeYear === yr
@@ -178,65 +167,47 @@ export default function SocialSection() {
             ))}
           </div>
 
-          {/* Active year fact */}
           <div className="mt-4 glass-card px-5 py-4 max-w-md">
             <YearFact year={activeYear} />
           </div>
         </div>
 
-        {/* ── Right: Phone + floating app icons ────────────────────────────── */}
         <div className="relative flex items-center justify-center h-[520px]">
-          {/* Phone frame */}
           <div
             ref={phoneRef}
+            data-guide-id="social-phone"
             className="relative z-10 w-48 h-96 rounded-[2.5rem] border-2 border-[rgba(255,255,255,0.12)]
               bg-[rgba(255,255,255,0.04)] backdrop-blur-xl shadow-[0_0_60px_rgba(99,102,241,0.2)] overflow-hidden flex flex-col items-center justify-center"
             style={{ perspective: '400px' }}
           >
-            {/* Status bar */}
             <div className="absolute top-0 left-0 right-0 flex justify-between px-5 pt-3 text-[8px] font-mono text-[var(--text-muted)]">
               <span>9:41</span>
               <span>●●●</span>
             </div>
-            {/* Notch */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-16 h-6 bg-[var(--bg-dark)] rounded-b-2xl" />
-            {/* App grid preview */}
             <div className="grid grid-cols-3 gap-3 px-5">
               {APPS.slice(0, 9).map((a) => (
-                <div
-                  key={a.name}
-                  className="flex flex-col items-center gap-1"
-                  title={a.name}
-                >
+                <div key={a.name} className="flex flex-col items-center gap-1">
                   <div
                     className="w-10 h-10 rounded-2xl flex items-center justify-center text-lg shadow-md"
                     style={{ backgroundColor: a.color + '33', border: `1px solid ${a.color}44` }}
                   >
                     <span style={{ fontSize: '18px' }}>{a.icon}</span>
                   </div>
-                  <span className="text-[6px] text-[var(--text-muted)] truncate w-full text-center font-mono">
-                    {a.name}
-                  </span>
+                  <span className="text-[6px] text-[var(--text-muted)] truncate w-full text-center font-mono">{a.name}</span>
                 </div>
               ))}
             </div>
-            {/* Home indicator */}
-            <div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-16 h-1 bg-white/30 rounded-full" />
           </div>
 
-          {/* Floating app icons orbiting the phone */}
           {APPS.map((app, i) => (
             <div
               key={app.name}
               ref={(el) => (iconsRef.current[i] = el)}
+              data-guide-id={`social-app-${i}`}
               className="absolute flex items-center justify-center w-12 h-12 rounded-2xl text-xl
                 glass-card border border-white/10 shadow-lg pointer-events-none"
-              style={{
-                left: '50%', top: '50%',
-                transform: 'translate(-50%, -50%)',
-                opacity: 0,
-              }}
-              title={app.name}
+              style={{ left: '50%', top: '50%', transform: 'translate(-50%, -50%)', opacity: 0 }}
             >
               {app.icon}
             </div>
@@ -247,16 +218,15 @@ export default function SocialSection() {
   )
 }
 
-// Year-based fact sub-component
 function YearFact({ year }) {
   const facts = {
-    2004: { title: 'Facebook Launches', text: 'Mark Zuckerberg launches "thefacebook.com" from his Harvard dorm. 1 million users in the first month.' },
-    2007: { title: 'iPhone Changes Everything', text: 'Steve Jobs unveils "an iPod, a phone, and an internet communicator" — all in one device.' },
-    2009: { title: 'WhatsApp Founded', text: 'Two ex-Yahoo engineers build a simple messaging app. It will reach 2 billion users by 2020.' },
-    2010: { title: 'Instagram & iPad', text: 'Instagram launches and gets 1 million users in 2 months. Apple sells 3M iPads in 80 days.' },
-    2011: { title: 'Snapchat Born', text: '"Disappearing photos" seem like a gimmick — until they define an entire generation\'s communication.' },
-    2012: { title: 'Mobile Majority', text: 'For the first time, mobile internet traffic surpasses desktop. The world is in your pocket.' },
-    2015: { title: '3 Billion Online', text: 'Half the world\'s population is now connected. The other half is about to join.' },
+    2004: { title: 'Facebook Launches', text: 'Mark Zuckerberg launches "thefacebook.com" from his Harvard dorm.' },
+    2007: { title: 'iPhone Changes Everything', text: 'Steve Jobs unveils an iPod, a phone, and an internet communicator.' },
+    2009: { title: 'WhatsApp Founded', text: 'Two ex-Yahoo engineers build a simple messaging app.' },
+    2010: { title: 'Instagram & iPad', text: 'Instagram launches and gets 1 million users in 2 months.' },
+    2011: { title: 'Snapchat Born', text: 'Disappearing photos define an entire generation\'s communication.' },
+    2012: { title: 'Mobile Majority', text: 'Mobile internet traffic surpasses desktop for the first time.' },
+    2015: { title: '3 Billion Online', text: 'Half the world\'s population is now connected.' },
   }
   const fact = facts[year] || facts[2004]
   return (

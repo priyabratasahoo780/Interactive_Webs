@@ -20,7 +20,7 @@ export default function HeroSection({ onStartTour }) {
     velocityRef.current = velocity
   }, [velocity])
 
-  // ─── Three.js Particle System ───────────────────────────────────────────────
+  // Three.js Particle System 
   useEffect(() => {
     const canvas = canvasRef.current
     if (!canvas) return
@@ -33,7 +33,7 @@ export default function HeroSection({ onStartTour }) {
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100)
     camera.position.z = 30
 
-    // ── Create particle geometry ──
+    // Create particle geometry 
     const COUNT = 3500
     const positions = new Float32Array(COUNT * 3)
     const colors = new Float32Array(COUNT * 3)
@@ -118,7 +118,7 @@ export default function HeroSection({ onStartTour }) {
     const particles = new THREE.Points(geometry, material)
     scene.add(particles)
 
-    // ── Mouse parallax ──
+    //  Mouse parallax 
     let mouseX = 0, mouseY = 0
     const onMouse = (e) => {
       mouseX = (e.clientX / window.innerWidth - 0.5) * 2
@@ -126,12 +126,12 @@ export default function HeroSection({ onStartTour }) {
     }
     window.addEventListener('mousemove', onMouse)
 
-    // ── Scroll-responsive rotation ──
+    // Scroll-responsive rotation 
     let scrollY = 0
     const onScroll = () => { scrollY = window.scrollY }
     window.addEventListener('scroll', onScroll)
 
-    // ── Resize handler ──
+    //  Resize handler 
     const onResize = () => {
       camera.aspect = window.innerWidth / window.innerHeight
       camera.updateProjectionMatrix()
@@ -139,7 +139,7 @@ export default function HeroSection({ onStartTour }) {
     }
     window.addEventListener('resize', onResize)
 
-    // ── Animation loop ──
+    //  Animation loop 
     let animId
     const clock = new THREE.Clock()
     const animate = () => {
@@ -167,7 +167,7 @@ export default function HeroSection({ onStartTour }) {
     }
   }, [])
 
-  // ─── GSAP Cinematic Intro Timeline ──────────────────────────────────────────
+  //  GSAP Cinematic Intro Timeline
   useEffect(() => {
     const tl = gsap.timeline({ delay: 0.3 })
 
@@ -287,12 +287,12 @@ export default function HeroSection({ onStartTour }) {
           <button
             data-cursor
             onClick={onStartTour}
-            className="group flex items-center gap-3 px-8 py-4 rounded-full border border-white/10 hover:border-[var(--cyber-green)] hover:bg-[var(--cyber-green-dim)] transition-all duration-300"
+            className="group relative px-8 py-4 bg-[var(--cyber-green)] text-[var(--bg-dark)] font-display font-bold uppercase tracking-widest overflow-hidden transition-all duration-300 hover:scale-105 active:scale-95"
           >
-            <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center group-hover:border-[var(--cyber-green)]">
-                <div className="w-2 h-2 bg-white rounded-full group-hover:bg-[var(--cyber-green)] animate-ping" />
-            </div>
-            <span className="font-mono text-[10px] tracking-widest uppercase">Start Guided Tour</span>
+            <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+            <span className="relative z-10 flex items-center gap-2">
+              <span className="text-xl">🤖</span> Start Immersive Demo
+            </span>
           </button>
         </div>
       </div>

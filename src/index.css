@@ -2,9 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ============================================
-   GLOBAL RESET + BASE STYLES
-   ============================================ */
+/* GLOBAL RESET + BASE STYLES */
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -38,9 +36,7 @@ body {
   cursor: none; /* custom cursor */
 }
 
-/* ============================================
-   SCROLLBAR STYLING
-   ============================================ */
+/* SCROLLBAR STYLING */
 ::-webkit-scrollbar { width: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb {
@@ -48,17 +44,13 @@ body {
   border-radius: 2px;
 }
 
-/* ============================================
-   SELECTION
-   ============================================ */
+/* SELECTION */
 ::selection {
   background: var(--cyber-green);
   color: var(--bg-dark);
 }
 
-/* ============================================
-   CUSTOM CURSOR
-   ============================================ */
+/* CUSTOM CURSOR */
 .cursor-dot {
   width: 6px;
   height: 6px;
@@ -94,9 +86,7 @@ body {
   opacity: 0.6;
 }
 
-/* ============================================
-   SCROLL PROGRESS BAR
-   ============================================ */
+/* SCROLL PROGRESS BAR */
 .scroll-progress {
   position: fixed;
   top: 0; left: 0;
@@ -107,18 +97,14 @@ body {
   transform: scaleX(0);
 }
 
-/* ============================================
-   SECTION BASE
-   ============================================ */
+/* SECTION BASE */
 .section {
   position: relative;
   width: 100%;
   overflow: hidden;
 }
 
-/* ============================================
-   GLASSMORPHISM CARD
-   ============================================ */
+/* GLASSMORPHISM CARD */
 .glass-card {
   background: rgba(255, 255, 255, 0.03);
   backdrop-filter: blur(16px);
@@ -134,9 +120,7 @@ body {
   transform: translateY(-4px);
 }
 
-/* ============================================
-   GLOW TEXT
-   ============================================ */
+/* GLOW TEXT */
 .glow-text {
   text-shadow: 0 0 20px rgba(0, 212, 160, 0.5), 0 0 60px rgba(0, 212, 160, 0.2);
 }
@@ -149,9 +133,7 @@ body {
   text-shadow: 0 0 20px rgba(255, 45, 120, 0.6), 0 0 60px rgba(255, 45, 120, 0.2);
 }
 
-/* ============================================
-   GRADIENT TEXT UTILITY
-   ============================================ */
+/* GRADIENT TEXT UTILITY */
 .gradient-text-cyber {
   background: linear-gradient(135deg, var(--cyber-green) 0%, var(--electric-purple) 100%);
   -webkit-background-clip: text;
@@ -173,18 +155,14 @@ body {
   background-clip: text;
 }
 
-/* ============================================
-   GRID BACKGROUND
-   ============================================ */
+/* GRID BACKGROUND */
 .bg-grid {
   background-image: var(--tw-gradient-stops, linear-gradient(rgba(0,212,160,0.04) 1px, transparent 1px)),
     linear-gradient(90deg, rgba(0,212,160,0.04) 1px, transparent 1px);
   background-size: 60px 60px;
 }
 
-/* ============================================
-   NOISE TEXTURE OVERLAY
-   ============================================ */
+/* NOISE TEXTURE OVERLAY */
 .noise::after {
   content: '';
   position: absolute;
@@ -194,33 +172,25 @@ body {
   z-index: 1;
 }
 
-/* ============================================
-   HORIZONTAL SCROLL CONTAINER
-   ============================================ */
+/* HORIZONTAL SCROLL CONTAINER */
 .horizontal-track {
   display: flex;
   width: max-content;
   will-change: transform;
 }
 
-/* ============================================
-   WORD / CHAR SPLIT ANIMATION TARGET
-   ============================================ */
+/* WORD / CHAR SPLIT ANIMATION TARGET */
 .char, .word {
   display: inline-block;
   overflow: hidden;
 }
 
-/* ============================================
-   REVEAL CLIP ANIMATION BASE
-   ============================================ */
+/* REVEAL CLIP ANIMATION BASE */
 .clip-reveal {
   clip-path: inset(0 100% 0 0);
 }
 
-/* ============================================
-   TERMINAL CURSOR BLINK
-   ============================================ */
+/* TERMINAL CURSOR BLINK */
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50% { opacity: 0; }
@@ -236,9 +206,7 @@ body {
   margin-left: 2px;
 }
 
-/* ============================================
-   NEON BORDER PULSE
-   ============================================ */
+/* NEON BORDER PULSE */
 @keyframes neon-pulse {
   0%, 100% { box-shadow: 0 0 8px var(--cyber-green), 0 0 20px rgba(0,212,160,0.3); }
   50% { box-shadow: 0 0 20px var(--cyber-green), 0 0 60px rgba(0,212,160,0.5); }
@@ -249,9 +217,7 @@ body {
   animation: neon-pulse 2.5s ease-in-out infinite;
 }
 
-/* ============================================
-   YEAR BADGE
-   ============================================ */
+/* YEAR BADGE */
 .year-badge {
   font-family: 'JetBrains Mono', monospace;
   font-size: 0.65rem;
@@ -264,9 +230,7 @@ body {
   background: rgba(0, 212, 160, 0.08);
 }
 
-/* ============================================
-   SECTION DIVIDER
-   ============================================ */
+/* SECTION DIVIDER */
 .section-divider {
   width: 60px;
   height: 2px;
@@ -274,9 +238,7 @@ body {
   margin: 16px 0;
 }
 
-/* ============================================
-   HERO CANVAS
-   ============================================ */
+/* HERO CANVAS */
 #hero-canvas {
   position: absolute;
   inset: 0;
@@ -284,13 +246,62 @@ body {
   height: 100%;
 }
 
-/* ============================================
-   PERFORMANCE: reduce animations on low-end
-   ============================================ */
+/* PERFORMANCE: reduce animations on low-end */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ── Guide Interaction Simulations ────────────────────────────────── */
+.guide-highlight-pulse {
+  position: relative !important;
+}
+.guide-highlight-pulse::after {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border: 4px solid var(--cyber-green);
+  border-radius: inherit;
+  animation: guide-pulse 1.5s infinite;
+  pointer-events: none;
+  z-index: 100;
+}
+
+@keyframes guide-pulse {
+  0% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1.3); opacity: 0; }
+}
+
+.guide-hover-sim {
+  transform: translateY(-12px) scale(1.05) !important;
+  border-color: var(--cyber-green) !important;
+  box-shadow: 0 0 40px rgba(0, 212, 160, 0.4) !important;
+  z-index: 50 !important;
+}
+
+.guide-click-sim {
+  transform: scale(0.9) !important;
+  transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important;
+}
+
+/* Smart Camera Zoom Layer */
+#root {
+  transition: transform 1.5s cubic-bezier(0.23, 1, 0.32, 1);
+  transform-origin: center center;
+}
+
+.camera-zoom-active {
+  filter: blur(1px);
+}
+
+@keyframes point {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(10px); }
+  100% { transform: translateX(0); }
+}
+.animate-point {
+  animation: point 0.6s ease-in-out infinite;
 }

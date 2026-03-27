@@ -34,7 +34,7 @@ import RobotGuide           from './components/RobotGuide'
 // Register GSAP plugins (idempotent)
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
 
-// ─── ScrollTrigger global defaults ──────────────────────────────────────────
+// ScrollTrigger global defaults 
 ScrollTrigger.defaults({
   markers: false,
   // Ensure ScrollTrigger refreshes on dynamic content
@@ -92,7 +92,7 @@ export default function App() {
   )
 }
 
-// ─── Footer ─────────────────────────────────────────────────────────────────
+// Footer 
 function Footer() {
   return (
     <footer className="relative py-20 bg-[#020510] border-t border-white/5 overflow-hidden">

@@ -42,7 +42,7 @@ export default function Web3Section() {
     const section = sectionRef.current
     if (!section) return
 
-    // ── 1. Glitch text on the heading ────────────────────────────────────────
+    // 1. Glitch text on the heading 
     const title = titleRef.current
     if (title) {
       // Glitch flicker loop
@@ -57,7 +57,7 @@ export default function Web3Section() {
         .to(title, { skewX: 0,  duration: 0.05 })
     }
 
-    // ── 2. Scroll-triggered heading reveal ───────────────────────────────────
+    // 2. Scroll-triggered heading reveal 
     gsap.fromTo(
       section.querySelectorAll('.web3-reveal'),
       { opacity: 0, y: 60 },
@@ -68,7 +68,7 @@ export default function Web3Section() {
       }
     )
 
-    // ── 3. Globe rings rotate via CSS + GSAP ────────────────────────────────
+    // 3. Globe rings rotate via CSS + GSAP 
     const rings = orbRef.current?.querySelectorAll('.orb-ring')
     rings?.forEach((ring, i) => {
       const tl = gsap.to(ring, {
@@ -86,7 +86,7 @@ export default function Web3Section() {
       duration: 2, yoyo: true, repeat: -1, ease: 'sine.inOut',
     })
 
-    // ── 4. Cards stagger in ──────────────────────────────────────────────────
+    // 4. Cards stagger in 
     cardsRef.current.forEach((card, i) => {
       if (!card) return
       gsap.fromTo(card,
@@ -122,20 +122,25 @@ export default function Web3Section() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
 
-        {/* ── Section header ─────────────────────────────────────────────────── */}
+        {/* Section header */}
         <div className="text-center mb-16">
           <span className="year-badge web3-reveal inline-block mb-6" style={{ borderColor: 'rgba(99,102,241,0.5)', color: '#818cf8' }}>
             Web3 + AI + Spatial Computing
           </span>
 
-          <h2
-            ref={titleRef}
-            className="web3-reveal text-5xl md:text-7xl font-display font-bold leading-tight mb-6"
+          <div 
+            ref={centerRef} 
+            data-guide-id="web3-center"
+            className="web3-reveal w-48 h-48 md:w-64 md:h-64 rounded-full border-2 border-amber-500/30 flex items-center justify-center relative overflow-hidden group shadow-[0_0_50px_rgba(251,191,36,0.1)] mx-auto mb-6"
           >
-            <span className="gradient-text-aurora glow-text-purple">The Next</span>
-            <br />
-            <span className="text-[var(--text-primary)]">Internet</span>
-          </h2>
+            <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 via-transparent to-transparent group-hover:from-amber-500/20 transition-all duration-500" />
+            <div className="absolute inset-0 rounded-full border border-amber-500/20 animate-pulse-slow" />
+            <div className="relative z-10 text-center text-3xl md:text-4xl font-display font-bold leading-tight">
+              <span className="gradient-text-aurora glow-text-purple">The Next</span>
+              <br />
+              <span className="text-[var(--text-primary)]">Internet</span>
+            </div>
+          </div>
 
           <p className="web3-reveal text-[var(--text-secondary)] text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
             We are at an inflection point as significant as 1969. Decentralization, AI, and
@@ -143,7 +148,7 @@ export default function Web3Section() {
           </p>
         </div>
 
-        {/* ── Globe + Past/Future toggle ──────────────────────────────────────── */}
+        {/* Globe + Past/Future toggle */}
         <div className="flex flex-col md:flex-row items-center justify-center gap-12 mb-20">
 
           {/* Holographic globe */}
@@ -211,14 +216,14 @@ export default function Web3Section() {
           </div>
         </div>
 
-        {/* ── Pillar cards ───────────────────────────────────────────────────── */}
+        {/* Pillar cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {FUTURE_PILLARS.map((p, i) => (
             <div
-              key={p.title}
+              key={i}
               ref={(el) => (cardsRef.current[i] = el)}
-              data-cursor
-              className="glass-card p-6 group cursor-pointer"
+              data-guide-id={`web3-node-${i}`}
+              className="glass-card p-6 border-amber-500/10 hover:border-amber-500/40 transition-all duration-500 cursor-pointer group"
               style={{ opacity: 0 }}
             >
               <div className="text-3xl mb-4 group-hover:scale-110 transition-transform duration-300">{p.icon}</div>
@@ -231,7 +236,7 @@ export default function Web3Section() {
           ))}
         </div>
 
-        {/* ── Closing quote ──────────────────────────────────────────────────── */}
+        {/* Closing quote */}
         <div className="mt-20 text-center">
           <blockquote className="text-2xl md:text-4xl font-display font-light text-[var(--text-secondary)] max-w-3xl mx-auto leading-relaxed">
             "The internet will disappear. There will be so many IP addresses,

@@ -1,84 +1,89 @@
-import { useEffect, useState, useRef } from 'react'
+import { useEffect, useState, useRef, useCallback } from 'react'
 import { gsap } from 'gsap'
 import { useVoiceNarration } from '../hooks/useVoiceNarration'
 import { useAutoScroll } from '../hooks/useAutoScroll'
-
-const TOUR_SCRIPT = [
-    { 
-        id: 'hero', 
-        label: 'Intro',
-        text: "Hello. I am your AI guide. Let's explore the incredible journey of how the internet evolved from a small network to a global consciousness.",
-        delay: 2000 
-    },
-    { 
-        id: 'arpanet', 
-        label: 'ARPANET',
-        text: "It all started here in 1969. ARPANET was the first packet-switching network. A rigid, experimental grid that changed everything.",
-        delay: 4000 
-    },
-    { 
-        id: 'dotcom', 
-        label: 'Dotcom',
-        text: "By the 90s, the web exploded. Dotcom fever took over, bringing bright colors, interactivity, and the first taste of a digital economy.",
-        delay: 5000 
-    },
-    { 
-        id: 'social', 
-        label: 'Social',
-        text: "Then came the Social Age. We stopped just browsing and started connecting. The internet became a mirror of our lives.",
-        delay: 5000 
-    },
-    { 
-        id: 'web3', 
-        label: 'Web3',
-        text: "Now we face the decentralized frontier. Web 3 is about ownership, privacy, and returning the power to the users.",
-        delay: 5000 
-    },
-    { 
-        id: 'airevolution', 
-        label: 'AI',
-        text: "And here we are today. The AI Revolution. The network has begun to think, reasoning and creating alongside humans.",
-        delay: 6000 
-    },
-    { 
-        id: 'spatial', 
-        label: 'Spatial',
-        text: "And finally, the Spatial Web. Where the screen disappears, and reality itself becomes an interactive digital layer. Thank you for exploring with me.",
-        delay: 8000 
-    }
-]
+import { useRobotFlow } from '../hooks/useRobotFlow'
+import { useAutoInteraction } from '../hooks/useAutoInteraction'
 
 export default function RobotGuide({ isActive, onExit }) {
-    const [step, setStep] = useState(0)
-    const { speak, stop, pause, resume, isSpeaking } = useVoiceNarration()
+    const [sectionIdx, setSectionIdx] = useState(0)
+    const [nodeIdx, setNodeIdx] = useState(0)
+    const [robotState, setRobotState] = useState('idle') // idle, walking, talking, pointing
+    
+    const { speak, stop, isSpeaking } = useVoiceNarration()
     const { scrollToSection } = useAutoScroll()
-    const robotRef = useRef(null)
+    const { TOUR_FLOW } = useRobotFlow()
+    const { triggerInteraction } = useAutoInteraction()
 
+    const robotRef = useRef(null)
+    const containerRef = useRef(null)
+
+    // Handle the full tour flow
     useEffect(() => {
         if (!isActive) {
             stop()
-            setStep(0)
+            setSectionIdx(0)
+            setNodeIdx(0)
+            resetCamera()
             return
         }
 
         const runTour = async () => {
-            for (let i = 0; i < TOUR_SCRIPT.length; i++) {
-                if (!isActive) break;
-                setStep(i)
-                const current = TOUR_SCRIPT[i]
-                
-                // 1. Scroll to section - Ultimate cinematic slow scroll
-                scrollToSection(current.id, 5.0)
-                await new Promise(r => setTimeout(r, 5500))
+            // Click-to-Jump Interruption Logic
+            const handleJump = (e) => {
+                const target = e.target.closest('[data-guide-id]')
+                if (target && isActive) {
+                    const id = target.getAttribute('data-guide-id')
+                    // Find node in TOUR_FLOW
+                    TOUR_FLOW.forEach((section, sIdx) => {
+                        section.nodes.forEach((node, nIdx) => {
+                            if (node.id === id) {
+                                setSectionIdx(sIdx)
+                                setNodeIdx(nIdx)
+                                // This is a simplified jump; in a real production app we'd 
+                                // use an AbortController or a state-based queue.
+                            }
+                        })
+                    })
+                }
+            }
+            document.addEventListener('click', handleJump)
 
-                // 2. Speak the text
-                speak(current.text)
-                
-                // 3. Wait for the estimated duration or until speaking ends
-                const charDuration = current.text.length * 60 // Roughly 60ms per char
-                await new Promise(r => setTimeout(r, Math.max(charDuration, current.delay)))
-                
-                if (i === TOUR_SCRIPT.length - 1) {
+            for (let s = 0; s < TOUR_FLOW.length; s++) {
+                if (!isActive) break;
+                const section = TOUR_FLOW[s]
+                setSectionIdx(s)
+
+                // 1. Move to Section
+                setRobotState('walking')
+                scrollToSection(section.section, 4.0)
+                await new Promise(r => setTimeout(r, 4500))
+
+                for (let n = 0; n < section.nodes.length; n++) {
+                    if (!isActive) break;
+                    const node = section.nodes[n]
+                    setNodeIdx(n)
+
+                    // 2. Walk to Feature & Focus Camera
+                    setRobotState('walking')
+                    focusOnNode(node.id)
+                    await new Promise(r => setTimeout(r, 2000))
+
+                    // 3. Point & Interact
+                    setRobotState('pointing')
+                    if (node.action) {
+                        triggerInteraction(node.id, node.action)
+                        await new Promise(r => setTimeout(r, 800))
+                    }
+
+                    // 4. Talk
+                    setRobotState('talking')
+                    speak(node.text)
+                    await new Promise(r => setTimeout(r, node.duration || 5000))
+                }
+
+                if (s === TOUR_FLOW.length - 1) {
+                    setRobotState('idle')
                     setTimeout(() => onExit(), 3000)
                 }
             }
@@ -87,61 +92,154 @@ export default function RobotGuide({ isActive, onExit }) {
         runTour()
     }, [isActive])
 
-    // Robot Floating Animation
-    useEffect(() => {
-        if (!robotRef.current) return
-        gsap.to(robotRef.current, {
-            y: '-=15',
+    // Smart Camera Logic
+    const focusOnNode = (nodeId) => {
+        const el = document.querySelector(`[data-guide-id="${nodeId}"]`)
+        const root = document.getElementById('root')
+        if (!el || !root) return
+
+        const rect = el.getBoundingClientRect()
+        const centerX = window.innerWidth / 2
+        const centerY = window.innerHeight / 2
+        
+        const moveX = (centerX - rect.left - rect.width / 2) * 0.5
+        const moveY = (centerY - rect.top - rect.height / 2) * 0.5
+
+        gsap.to(root, {
+            scale: 1.15,
+            x: moveX,
+            y: moveY,
             duration: 1.5,
-            repeat: -1,
-            yoyo: true,
-            ease: 'power1.inOut'
+            ease: 'power3.inOut'
         })
-    }, [isActive])
+        root.classList.add('camera-zoom-active')
+    }
+
+    const resetCamera = () => {
+        const root = document.getElementById('root')
+        if (root) {
+            gsap.to(root, { scale: 1, x: 0, y: 0, duration: 1.5, ease: 'power3.inOut' })
+            root.classList.remove('camera-zoom-active')
+        }
+    }
 
     if (!isActive) return null
 
     return (
-        <div className="fixed inset-0 z-[200] pointer-events-none">
-            {/* Cinematic Dimming */}
-            <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px] opacity-0 animate-fade-in" />
-            
-            {/* Robot Character */}
-            <div ref={robotRef} className="absolute right-12 bottom-32 w-48 h-48 pointer-events-auto">
-                <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_0_20px_rgba(34,211,238,0.5)]">
-                    {/* Robot Head */}
-                    <rect x="25" y="20" width="50" height="40" rx="10" fill="#1e293b" stroke="#22d3ee" strokeWidth="2" />
-                    {/* Eyes */}
-                    <circle cx="40" cy="35" r="4" fill={isSpeaking ? '#22d3ee' : '#0f172a'} className={isSpeaking ? 'animate-pulse' : ''} />
-                    <circle cx="60" cy="35" r="4" fill={isSpeaking ? '#22d3ee' : '#0f172a'} className={isSpeaking ? 'animate-pulse' : ''} />
-                    {/* Body */}
-                    <path d="M35 60 L65 60 L75 90 L25 90 Z" fill="#334155" stroke="#22d3ee" strokeWidth="2" />
-                    {/* Glowing Core */}
-                    <circle cx="50" cy="75" r="5" fill="#facc15" className="animate-pulse" />
-                </svg>
+        <div ref={containerRef} className="fixed inset-0 z-[300] pointer-events-none">
+            {/* Cinematic Overlay */}
+            <div className="absolute inset-0 bg-black/30 backdrop-blur-[1px] animate-fade-in" />
 
-                {/* Speech Bubble */}
+            {/* UPGRADED 3D-STYLE ROBOT */}
+            <div 
+                ref={robotRef} 
+                className="absolute transition-all duration-1000 ease-in-out pointer-events-auto"
+                style={{
+                    right: '10%',
+                    bottom: '15%',
+                    width: '180px',
+                    height: '180px'
+                }}
+            >
+                <div className={`relative w-full h-full robot-wrapper state-${robotState}`}>
+                    <svg viewBox="0 0 100 100" className="w-full h-full drop-shadow-[0_20px_50px_rgba(34,211,238,0.4)]">
+                        <defs>
+                            <linearGradient id="robotBody" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" stopColor="#334155" />
+                                <stop offset="100%" stopColor="#0f172a" />
+                            </linearGradient>
+                            <filter id="glow">
+                                <feGaussianBlur stdDeviation="2.5" result="blur" />
+                                <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                            </filter>
+                        </defs>
+
+                        {/* Floating Shadow */}
+                        <ellipse cx="50" cy="95" rx="20" ry="5" fill="rgba(0,0,0,0.3)" />
+
+                        {/* Robot Body (3D effect) */}
+                        <path 
+                            d="M30 40 Q50 35 70 40 L75 80 Q50 85 25 80 Z" 
+                            fill="url(#robotBody)" 
+                            stroke="#22d3ee" 
+                            strokeWidth="1.5"
+                        />
+
+                        {/* Emotive Face Plate */}
+                        <rect x="35" y="45" width="30" height="20" rx="8" fill="#000" />
+                        
+                        {/* Eyes based on state */}
+                        <g className={robotState === 'talking' ? 'animate-pulse' : ''}>
+                            <circle cx="42" cy="55" r="2.5" fill="#22d3ee" filter="url(#glow)" />
+                            <circle cx="58" cy="55" r="2.5" fill="#22d3ee" filter="url(#glow)" />
+                        </g>
+
+                        {/* Pointing Arm */}
+                        {robotState === 'pointing' && (
+                            <path 
+                                d="M70 60 L90 50 L85 45" 
+                                fill="none" 
+                                stroke="#22d3ee" 
+                                strokeWidth="3" 
+                                strokeLinecap="round" 
+                                className="animate-point"
+                            />
+                        )}
+
+                        {/* Antenna (Reactivity) */}
+                        <line x1="50" y1="40" x2="50" y2="30" stroke="#22d3ee" strokeWidth="2" />
+                        <circle cx="50" cy="30" r="2" fill="#22d3ee" className="animate-ping" />
+                    </svg>
+                </div>
+
+                {/* Live Caption/Narration */}
                 {isSpeaking && (
-                    <div className="absolute -top-16 right-0 bg-black/80 border border-cyan-400/30 px-4 py-2 rounded-xl backdrop-blur-md max-w-xs">
-                        <div className="text-[10px] font-mono text-cyan-400 tracking-wider leading-relaxed">
-                            {TOUR_SCRIPT[step].text}
+                    <div className="absolute -top-24 right-0 bg-black/80 border border-cyan-400/40 p-4 rounded-2xl backdrop-blur-xl w-64 shadow-2xl animate-slide-up">
+                        <div className="text-[10px] font-mono text-cyan-400/60 uppercase mb-2 tracking-tighter flex justify-between">
+                            <span>Narration Active</span>
+                            <span className="animate-pulse">●</span>
                         </div>
+                        <p className="text-sm font-display text-white/90 leading-tight">
+                            {TOUR_FLOW[sectionIdx].nodes[nodeIdx].text}
+                        </p>
                     </div>
                 )}
             </div>
 
-            {/* Controls HUD */}
-            <div className="absolute top-1/2 left-8 -translate-y-1/2 flex flex-col gap-4 pointer-events-auto">
+            {/* Tour HUD */}
+            <div className="absolute top-12 left-12 space-y-4 pointer-events-auto">
+                <div className="glass-card p-6 border-cyan-400/20 w-72 backdrop-blur-3xl">
+                    <div className="flex items-center gap-3 mb-4">
+                        <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                        <span className="text-[10px] font-mono text-cyan-400 uppercase tracking-widest">Immersive Demo</span>
+                        <button onClick={onExit} className="ml-auto text-white/40 hover:text-red-400 transition-colors">✕</button>
+                    </div>
+                    
+                    <div className="space-y-4">
+                        <div>
+                            <div className="text-[9px] text-white/40 uppercase mb-1">Current Section</div>
+                            <div className="text-lg font-bold text-white capitalize">{TOUR_FLOW[sectionIdx].section}</div>
+                        </div>
+                        
+                        <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+                            <div 
+                                className="h-full bg-cyan-400 transition-all duration-1000"
+                                style={{ width: `${((sectionIdx + 1) / TOUR_FLOW.length) * 100}%` }}
+                            />
+                        </div>
+
+                        <div className="text-[9px] font-mono text-cyan-400/60">
+                            Exploring Feature {nodeIdx + 1} of {TOUR_FLOW[sectionIdx].nodes.length}
+                        </div>
+                    </div>
+                </div>
+
                 <button 
                     onClick={onExit}
-                    className="glass-card px-6 py-2 border-red-500/30 text-red-500 hover:bg-red-500/10 transition-colors uppercase text-[10px] font-mono tracking-widest"
+                    className="glass-card px-8 py-3 w-full border-red-500/20 text-red-400 hover:bg-red-500/10 transition-all text-xs font-mono uppercase tracking-[0.2em]"
                 >
-                    Exit Tour
+                    Abort Experience
                 </button>
-                <div className="glass-card px-6 py-4 border-cyan-400/30">
-                    <div className="text-[8px] font-mono text-cyan-400/60 uppercase mb-2">Guided Mode Active</div>
-                    <div className="text-[12px] font-mono text-white/90">Section: {TOUR_SCRIPT[step].label}</div>
-                </div>
             </div>
         </div>
     )

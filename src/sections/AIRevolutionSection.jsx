@@ -39,7 +39,7 @@ export default function AIRevolutionSection() {
             scrollTrigger: {
                 trigger: section,
                 start: 'top top',
-                end: '+=200%',
+                end: '+=250%',
                 pin: true,
                 scrub: 1.5,
                 anticipatePin: 1
@@ -51,36 +51,29 @@ export default function AIRevolutionSection() {
         tl.to(nodes, { scale: 1, opacity: 1, stagger: 0.1, duration: 0.8, ease: 'back.out(1.7)' })
           .to(lines, { strokeDashoffset: 0, opacity: 0.6, stagger: 0.05, duration: 1 }, '-=0.5')
 
-        // 2. Continuous "Firing" logic inside the timeline
+        // 2. Continuous "Firing" logic
         const firingTl = gsap.timeline({ repeat: -1 })
         SYNAPSES.forEach(([from, to], i) => {
             const line = svg.querySelector(`.synapse-${from}-${to}`)
-            firingTl.to(line, { 
-                stroke: '#fbbf24', 
-                strokeWidth: 2,
-                opacity: 1,
-                duration: 0.2,
-                yoyo: true,
-                repeat: 1,
-                ease: 'power2.in'
-            }, i * 0.1)
-        })
-
-        // Modulate firing speed based on scroll velocity
-        const velocityEffect = gsap.to(tl, {
-            timeScale: 1 + Math.abs(velocity / 500),
-            duration: 0.5,
-            paused: true
+            if (line) {
+                firingTl.to(line, { 
+                    stroke: '#fbbf24', 
+                    strokeWidth: 2,
+                    opacity: 1,
+                    duration: 0.2,
+                    yoyo: true,
+                    repeat: 1,
+                    ease: 'power2.in'
+                }, i * 0.1)
+            }
         })
 
         return () => {
             tl.kill()
             firingTl.kill()
-            velocityEffect.kill()
         }
     }, [])
 
-    // Update timeScale reactively
     useEffect(() => {
         if (timelineRef.current) {
             gsap.to(timelineRef.current, {
@@ -103,19 +96,19 @@ export default function AIRevolutionSection() {
                     <span className="year-badge mb-6 inline-block" style={{ color: '#fbbf24', borderColor: '#fbbf24' }}>
                         2023 — The AI Revolution
                     </span>
-                    <h2 className="text-5xl md:text-7xl font-display font-bold leading-tight mb-8">
-                        The Neural <br />
-                        <span className="gradient-text-aurora glow-text-amber">Awakening</span>
+                    <h2 data-guide-id="ai-title" className="text-5xl md:text-8xl font-black uppercase tracking-tighter mb-4 gradient-text-fire glow-text-pink">
+                        The Neural Dawn
+                        <span className="gradient-text-aurora glow-text-amber"> Awakening</span>
                     </h2>
-                    <p className="text-[var(--text-secondary)] text-lg max-w-md leading-relaxed">
+                    <p data-guide-id="ai-desc" className="text-[var(--text-secondary)] text-lg max-w-md leading-relaxed">
                         The internet is no longer just a library of data. It has become a cognitive layer. 
-                        Machines now generate, reason, and create alongside us, reshaping the fabric of reality.
+                        Machines now generate, reason, and create alongside us.
                     </p>
                 </div>
 
                 <div className="relative aspect-square max-w-lg mx-auto lg:mx-0">
-                    <svg ref={svgRef} viewBox="0 0 100 100" className="w-full h-full overflow-visible">
-                        {/* Synapses (Paths) */}
+                    <svg ref={svgRef} data-guide-id="ai-brain-svg" viewBox="0 0 100 100" className="w-full h-full overflow-visible">
+                        {/* Synapses */}
                         {SYNAPSES.map(([from, to]) => {
                             const n1 = NEURONS.find(n => n.id === from)
                             const n2 = NEURONS.find(n => n.id === to)
@@ -129,9 +122,9 @@ export default function AIRevolutionSection() {
                                 />
                             )
                         })}
-                        {/* Neurons (Nodes) */}
+                        {/* Neurons */}
                         {NEURONS.map(n => (
-                            <g key={n.id} className="neuron">
+                            <g key={n.id} className="neuron" data-guide-id={`ai-neuron-${n.id}`}>
                                 <circle cx={n.x} cy={n.y} r="2.5" fill="#fbbf24" style={{ filter: 'drop-shadow(0 0 8px #fbbf24)' }} />
                                 <circle cx={n.x} cy={n.y} r="5" fill="none" stroke="rgba(251, 191, 36, 0.2)" strokeWidth="0.2" />
                             </g>
