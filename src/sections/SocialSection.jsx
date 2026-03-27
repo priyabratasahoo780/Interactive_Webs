@@ -141,6 +141,31 @@ export default function SocialSection() {
       orbitTlRef.current.push(floatTl)
     })
 
+    // 6. Social Data Particles Generator
+    const particleContainer = section.querySelector('.social-particle-field')
+    if (particleContainer) {
+        for (let i = 0; i < 30; i++) {
+            const part = document.createElement('div')
+            part.className = 'absolute w-1 h-1 bg-cyan-400/20 rounded-full'
+            particleContainer.appendChild(part)
+            
+            gsap.set(part, { 
+                x: gsap.utils.random(0, 100, true) + '%', 
+                y: gsap.utils.random(0, 100, true) + '%',
+                scale: gsap.utils.random(0.5, 2)
+            })
+            
+            gsap.to(part, {
+                y: '-=100',
+                opacity: 0,
+                duration: gsap.utils.random(3, 8),
+                repeat: -1,
+                delay: gsap.utils.random(0, 5),
+                ease: 'none'
+            })
+        }
+    }
+
     // 4. Stats counter (Odometer Style)
     const animateCounter = (el, target) => {
         gsap.to({ val: 0 }, {
@@ -252,6 +277,10 @@ export default function SocialSection() {
       ref={sectionRef}
       className="section relative min-h-screen bg-[#020410] flex items-center py-24 overflow-hidden"
     >
+      {/* Background Depth Layers */}
+      <div className="absolute inset-0 bg-grid opacity-5 pointer-events-none" />
+      <div className="social-particle-field absolute inset-0 pointer-events-none" />
+      
       {/* SVG Connectivity Layer */}
       <svg className="social-svg-layer absolute inset-0 w-full h-full pointer-events-none z-0" />
       {/* Purple radial glow */}
@@ -286,15 +315,19 @@ export default function SocialSection() {
               { label: 'Mobile internet share', value: '51.3', suffix: '%' },
               { label: 'iOS apps 2015', value: '1.5', suffix: 'M' },
             ].map((s) => (
-              <div key={s.label} className="glass-card px-5 py-3 text-center min-w-[110px] relative overflow-hidden group">
-                {/* Data Pulse Beam */}
-                <div className="stat-card-pulse absolute inset-0 bg-gradient-to-r from-transparent via-[var(--cyber-green)] to-transparent opacity-0 -translate-x-full pointer-events-none" />
+              <div key={s.label} className="glass-card px-5 py-3 text-center min-w-[110px] relative overflow-hidden group border-none">
+                {/* Liquid Neon Border */}
+                <div className="absolute inset-0 border border-cyan-400/20 rounded-xl" />
+                <div className="absolute inset-0 border border-cyan-400/40 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 shadow-[inset_0_0_15px_rgba(34,211,238,0.2)]" />
                 
-                <div className="text-xl font-display font-bold text-[var(--cyber-green)] group-hover:scale-110 transition-transform duration-300">
+                {/* Data Pulse Beam */}
+                <div className="stat-card-pulse absolute inset-0 bg-gradient-to-r from-transparent via-cyan-400/20 to-transparent opacity-0 -translate-x-full pointer-events-none" />
+                
+                <div className="relative z-10 text-xl font-display font-bold text-[var(--cyber-green)] group-hover:scale-110 transition-transform duration-300">
                   <span className="social-counter" data-target={parseFloat(s.value)}>0</span>
                   {s.suffix}
                 </div>
-                <div className="text-[9px] font-mono text-[var(--text-muted)] tracking-wide mt-1 uppercase">
+                <div className="relative z-10 text-[9px] font-mono text-[var(--text-muted)] tracking-wide mt-1 uppercase">
                   {s.label}
                 </div>
               </div>
