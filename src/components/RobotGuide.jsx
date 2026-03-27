@@ -67,9 +67,9 @@ export default function RobotGuide({ isActive, onExit }) {
                 setStep(i)
                 const current = TOUR_SCRIPT[i]
                 
-                // 1. Scroll to section
-                scrollToSection(current.id)
-                await new Promise(r => setTimeout(r, 1500))
+                // 1. Scroll to section - Slower for "perfect" visualization
+                scrollToSection(current.id, 3.5)
+                await new Promise(r => setTimeout(r, 3800))
 
                 // 2. Speak the text
                 speak(current.text)
