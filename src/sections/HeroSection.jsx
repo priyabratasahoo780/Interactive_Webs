@@ -115,68 +115,97 @@ export default function HeroSection({ onStartTour }) {
       vertexColors: true,
     })
 
-    // Atmospheric Fog
-    scene.fog = new THREE.FogExp2('#020510', 0.015)
+    // 1. Network Layers (Background, Mid, Foreground)
+    const layers = [
+        { count: 120, dist: 12, speed: 0.2, opacity: 0.1, z: -40, size: 0.5 },
+        { count: 80,  dist: 10, speed: 0.5, opacity: 0.3, z: -10, size: 1.0 },
+        { count: 40,  dist: 8,  speed: 1.2, opacity: 0.6, z: 20,  size: 2.0 }
+    ]
 
-    // Create Tower Network
-    const towerGroup = new THREE.Group()
-    scene.add(towerGroup)
+    const networkGroups = layers.map(layer => {
+        const group = new THREE.Group()
+        group.userData = layer
+        scene.add(group)
 
-    const TOWER_COUNT = 40
-    const towers = []
-    const beamGeometry = new THREE.BoxGeometry(0.1, 0.1, 1)
-    const towerGeometry = new THREE.BoxGeometry(0.4, 4, 0.4)
-    const towerMaterial = new THREE.MeshPhongMaterial({ 
-        color: '#00d4a0', 
-        emissive: '#00d4a0', 
-        emissiveIntensity: 0.5,
-        transparent: true,
-        opacity: 0.8
+        const nodes = []
+        const nodePositions = new Float32Array(layer.count * 3)
+        for (let i = 0; i < layer.count; i++) {
+            const x = (Math.random() - 0.5) * 80
+            const y = (Math.random() - 0.5) * 60
+            const z = (Math.random() - 0.5) * 20 + layer.z
+            
+            // Avoid center text area slightly
+            const distFromCenter = Math.sqrt(x*x + y*y)
+            const nx = distFromCenter < 10 ? x * 2 : x
+            const ny = distFromCenter < 10 ? y * 2 : y
+            
+            nodePositions[i*3] = nx
+            nodePositions[i*3+1] = ny
+            nodePositions[i*3+2] = z
+            nodes.push(new THREE.Vector3(nx, ny, z))
+        }
+
+        const nodeGeo = new THREE.BufferGeometry()
+        nodeGeo.setAttribute('position', new THREE.BufferAttribute(nodePositions, 3))
+        const nodeMat = new THREE.PointsMaterial({ 
+            color: '#00d4a0', 
+            size: layer.size, 
+            transparent: true, 
+            opacity: layer.opacity,
+            blending: THREE.AdditiveBlending 
+        })
+        const nodePoints = new THREE.Points(nodeGeo, nodeMat)
+        group.add(nodePoints)
+
+        // Connections
+        const linePositions = []
+        const connections = []
+        for (let i = 0; i < layer.count; i++) {
+            for (let j = i + 1; j < layer.count; j++) {
+                if (nodes[i].distanceTo(nodes[j]) < layer.dist) {
+                    linePositions.push(nodes[i].x, nodes[i].y, nodes[i].z)
+                    linePositions.push(nodes[j].x, nodes[j].y, nodes[j].z)
+                    connections.push({ start: nodes[i], end: nodes[j] })
+                }
+            }
+        }
+        const lineGeo = new THREE.BufferGeometry()
+        lineGeo.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3))
+        const lineMat = new THREE.LineBasicMaterial({ 
+            color: '#00d4a0', 
+            transparent: true, 
+            opacity: layer.opacity * 0.5,
+            blending: THREE.AdditiveBlending 
+        })
+        const lines = new THREE.LineSegments(lineGeo, lineMat)
+        group.add(lines)
+
+        // Data Packets
+        const packetCount = Math.floor(connections.length * 0.3)
+        const packets = []
+        for (let i = 0; i < packetCount; i++) {
+            const conn = connections[Math.floor(Math.random() * connections.length)]
+            const packet = { 
+                conn, 
+                t: Math.random(), 
+                speed: 0.002 + Math.random() * 0.005,
+                mesh: new THREE.Mesh(
+                    new THREE.SphereGeometry(0.1, 8, 8),
+                    new THREE.MeshBasicMaterial({ color: '#fff', transparent: true, opacity: layer.opacity })
+                )
+            }
+            group.add(packet.mesh)
+            packets.push(packet)
+        }
+        group.userData.packets = packets
+        group.userData.nodes = nodes
+
+        return group
     })
-
-    for (let i = 0; i < TOWER_COUNT; i++) {
-        const tower = new THREE.Mesh(towerGeometry, towerMaterial)
-        const r = 20 + Math.random() * 20
-        const theta = Math.random() * Math.PI * 2
-        const phi = Math.acos((Math.random() * 2) - 1)
-        
-        tower.position.set(
-            r * Math.sin(phi) * Math.cos(theta),
-            r * Math.sin(phi) * Math.sin(theta),
-            r * Math.cos(phi) - 10
-        )
-        tower.lookAt(0, 0, 0)
-        towerGroup.add(tower)
-        towers.push(tower)
-    }
-
-    // Energy Beams (Connectivity)
-    const beamGroup = new THREE.Group()
-    scene.add(beamGroup)
-    const beamMaterial = new THREE.MeshBasicMaterial({ 
-        color: '#00d4a0', 
-        transparent: true, 
-        opacity: 0.15,
-        blending: THREE.AdditiveBlending 
-    })
-
-    for (let i = 0; i < TOWER_COUNT; i++) {
-        const start = towers[i].position
-        const next = towers[(i + 1) % TOWER_COUNT].position
-        
-        const beam = new THREE.Mesh(beamGeometry, beamMaterial)
-        const dist = start.distanceTo(next)
-        beam.scale.z = dist
-        beam.position.copy(start).lerp(next, 0.5)
-        beam.lookAt(next)
-        beamGroup.add(beam)
-    }
 
     // Lights
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2)
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.1)
     scene.add(ambientLight)
-    const pointLight = new THREE.PointLight('#00d4a0', 1, 100)
-    scene.add(pointLight)
 
     //  Mouse parallax 
     let mouseX = 0, mouseY = 0
@@ -206,20 +235,28 @@ export default function HeroSection({ onStartTour }) {
       animId = requestAnimationFrame(animate)
       const t = clock.getElapsedTime()
 
-      // Cinematic Flight + Velocity boost
       const vFactor = 1 + Math.abs(velocityRef.current / 400)
       
-      // Auto-drift camera
-      camera.position.x = Math.sin(t * 0.15) * 10
-      camera.position.y = Math.cos(t * -0.1) * 10
-      camera.lookAt(Math.sin(t * 0.5) * 5, 0, 0)
+      networkGroups.forEach(group => {
+        const layer = group.userData
+        
+        // Parallax + Movement
+        group.rotation.y = t * (0.02 * layer.speed) + mouseX * (0.1 * layer.speed)
+        group.rotation.x = mouseY * (0.05 * layer.speed) + scrollY * (0.0001)
 
-      towerGroup.rotation.y = t * (0.02 * vFactor) + mouseX * 0.2
-      towerGroup.rotation.x = mouseY * 0.1 + scrollY * (0.0002 * vFactor)
-      beamGroup.rotation.copy(towerGroup.rotation)
-
-      // Pulsing towers
-      towerMaterial.emissiveIntensity = 0.5 + Math.sin(t * 2) * 0.3
+        // Update Packets
+        layer.packets.forEach(p => {
+            p.t += p.speed * vFactor
+            if (p.t > 1) {
+                p.t = 0
+                // Randomly burst faster (Data Spike)
+                if (Math.random() > 0.95) p.speed *= 2
+                else p.speed = 0.002 + Math.random() * 0.005
+            }
+            p.mesh.position.copy(p.conn.start).lerp(p.conn.end, p.t)
+            p.mesh.scale.setScalar(0.5 + Math.sin(t * 10 + p.t * 20) * 0.5)
+        })
+      })
 
       renderer.render(scene, camera)
     }
@@ -231,10 +268,12 @@ export default function HeroSection({ onStartTour }) {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onResize)
       renderer.dispose()
-      towerGeometry.dispose()
-      beamGeometry.dispose()
-      towerMaterial.dispose()
-      beamMaterial.dispose()
+      networkGroups.forEach(g => {
+          g.children.forEach(child => {
+              if (child.geometry) child.geometry.dispose()
+              if (child.material) child.material.dispose()
+          })
+      })
     }
   }, [])
 
