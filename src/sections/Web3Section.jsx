@@ -164,7 +164,7 @@ export default function Web3Section() {
         })
     }
 
-    // 9. Initial List Stagger
+    // 9. Initial List Stagger + Border Draw
     gsap.from('.toggle-list-item', {
         opacity: 0,
         x: -20,
@@ -172,8 +172,36 @@ export default function Web3Section() {
         duration: 0.5,
         ease: 'power2.out',
         delay: 0.5,
-        scrollTrigger: { trigger: '.glass-card', start: 'top 90%' }
+        scrollTrigger: { trigger: '.toggle-container-card', start: 'top 90%' }
     })
+    
+    const cardBorder = section.querySelector('.card-border-path')
+    if (cardBorder) {
+        gsap.fromTo(cardBorder, 
+            { strokeDasharray: '2000', strokeDashoffset: '2000' },
+            { strokeDashoffset: 0, duration: 2.5, ease: 'power2.inOut', scrollTrigger: { trigger: '.toggle-container-card', start: 'top 90%' } }
+        )
+    }
+
+    // 11. Mouse tracking glow for List Card
+    const listCard = section.querySelector('.toggle-container-card')
+    const listGlow = section.querySelector('.list-card-glow')
+    const onListMouseMove = (e) => {
+        const rect = listCard.getBoundingClientRect()
+        const x = e.clientX - rect.left
+        const y = e.clientY - rect.top
+        gsap.to(listGlow, {
+            x: x - 100,
+            y: y - 100,
+            opacity: 1,
+            duration: 0.6,
+            ease: 'power2.out'
+        })
+    }
+    const onListMouseLeave = () => gsap.to(listGlow, { opacity: 0, duration: 0.6 })
+    
+    listCard?.addEventListener('mousemove', onListMouseMove)
+    listCard?.addEventListener('mouseleave', onListMouseLeave)
 
     // 5. Interactive Magnetic Orb (Mouse Tracking)
     const onMouseMove = (e) => {
@@ -224,6 +252,8 @@ export default function Web3Section() {
       title && gsap.killTweensOf(title)
       rings?.forEach((r) => gsap.killTweensOf(r))
       window.removeEventListener('mousemove', onMouseMove)
+      listCard?.removeEventListener('mousemove', onListMouseMove)
+      listCard?.removeEventListener('mouseleave', onListMouseLeave)
     }
   }, [])
 
@@ -339,12 +369,20 @@ export default function Web3Section() {
               ))}
             </div>
 
-            {/* Dynamic list */}
-            <div className="glass-card p-5 space-y-2 transition-all duration-300">
+            {/* Dynamic list card with SVG border + Mouse Glow */}
+            <div className="toggle-container-card glass-card p-5 space-y-2 relative transition-all duration-300 overflow-hidden">
+              {/* Interactive Glow */}
+              <div className="list-card-glow absolute w-[200px] h-[200px] rounded-full blur-[80px] pointer-events-none opacity-0 z-0 bg-indigo-500/20" style={{ left: 0, top: 0 }} />
+              
+              {/* SVG Border Draw Overlay */}
+              <svg className="absolute inset-0 w-full h-full pointer-events-none z-10" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <rect x="0" y="0" width="100" height="100" fill="none" className="card-border-path" stroke="rgba(99,102,241,0.3)" strokeWidth="0.5" rx="4" ry="4" />
+              </svg>
+
               {PAST_PRESENT[toggle].items.map((item, i) => (
                 <div
                   key={item}
-                  className="toggle-list-item flex items-center gap-2 text-xs font-mono text-[var(--text-secondary)]"
+                  className="toggle-list-item relative z-10 flex items-center gap-2 text-xs font-mono text-[var(--text-secondary)]"
                 >
                   <span
                     className="w-1.5 h-1.5 rounded-full flex-shrink-0"
