@@ -103,43 +103,7 @@ export default function Web3Section() {
       })
     })
 
-    // 8. Advanced SVG Constellation (Connecting Cards to Orb)
-    const svgLayer = section.querySelector('.constellation-svg')
-    if (svgLayer && orbRef.current) {
-        cardsRef.current.forEach((card, i) => {
-            if (!card) return
-            const path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
-            path.setAttribute('class', 'constellation-path opacity-100')
-            path.setAttribute('stroke', 'rgba(99,102,241,0.5)')
-            path.setAttribute('stroke-width', '1.5')
-            path.setAttribute('fill', 'none')
-            svgLayer.appendChild(path)
-
-            const updatePath = () => {
-                const oRect = orbRef.current.getBoundingClientRect()
-                const cRect = card.getBoundingClientRect()
-                const sRect = section.getBoundingClientRect()
-                
-                const x1 = oRect.left + oRect.width / 2 - sRect.left
-                const y1 = oRect.top + oRect.height / 2 - sRect.top
-                const x2 = cRect.left + cRect.width / 2 - sRect.left
-                const y2 = cRect.top - sRect.top
-                
-                path.setAttribute('d', `M ${x1} ${y1} Q ${(x1 + x2) / 2} ${y1} ${x2} ${y2}`)
-            }
-
-            ScrollTrigger.create({
-                trigger: card,
-                start: 'top 85%',
-                onEnter: () => {
-                    updatePath()
-                    gsap.to(path, { opacity: 1, strokeDasharray: '1000', strokeDashoffset: '1000' })
-                    gsap.to(path, { strokeDashoffset: 0, duration: 2, ease: 'power2.inOut', delay: i * 0.1 })
-                }
-            })
-            window.addEventListener('resize', updatePath)
-        })
-    }
+    // 8. Advanced SVG Constellation (Removed by User Request)
 
     // 7. Elite Quote Reveal (Character-by-character blur-to-focus)
     const quote = section.querySelector('.quote-text')
@@ -293,9 +257,6 @@ export default function Web3Section() {
       
       {/* Dynamic Particle Field */}
       <div className="particle-field absolute inset-0 pointer-events-none overflow-hidden" />
-      
-      {/* SVG Constellation Layer */}
-      <svg className="constellation-svg absolute inset-0 w-full h-full pointer-events-none z-10" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
 
