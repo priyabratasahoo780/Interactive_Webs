@@ -115,33 +115,68 @@ export default function HeroSection({ onStartTour }) {
       vertexColors: true,
     })
 
-    const particles = new THREE.Points(geometry, material)
-    scene.add(particles)
+    // Atmospheric Fog
+    scene.fog = new THREE.FogExp2('#020510', 0.015)
 
-    // Plexus Network (Lines)
-    const lineMaterial = new THREE.LineBasicMaterial({
-        color: '#00d4a0',
+    // Create Tower Network
+    const towerGroup = new THREE.Group()
+    scene.add(towerGroup)
+
+    const TOWER_COUNT = 40
+    const towers = []
+    const beamGeometry = new THREE.BoxGeometry(0.1, 0.1, 1)
+    const towerGeometry = new THREE.BoxGeometry(0.4, 4, 0.4)
+    const towerMaterial = new THREE.MeshPhongMaterial({ 
+        color: '#00d4a0', 
+        emissive: '#00d4a0', 
+        emissiveIntensity: 0.5,
         transparent: true,
-        opacity: 0.2,
-        blending: THREE.AdditiveBlending
+        opacity: 0.8
     })
-    const lineGeometry = new THREE.BufferGeometry()
-    const linePositions = new Float32Array(COUNT * 6) // Connect each particle to 2-3 others
-    for (let i = 0; i < COUNT; i++) {
-        const i3 = i * 3
-        const i6 = i * 6
-        linePositions[i6] = positions[i3]
-        linePositions[i6 + 1] = positions[i3 + 1]
-        linePositions[i6 + 2] = positions[i3 + 2]
+
+    for (let i = 0; i < TOWER_COUNT; i++) {
+        const tower = new THREE.Mesh(towerGeometry, towerMaterial)
+        const r = 20 + Math.random() * 20
+        const theta = Math.random() * Math.PI * 2
+        const phi = Math.acos((Math.random() * 2) - 1)
         
-        const next = (i + 1) % COUNT
-        linePositions[i6 + 3] = positions[next * 3]
-        linePositions[i6 + 4] = positions[next * 3 + 1]
-        linePositions[i6 + 5] = positions[next * 3 + 2]
+        tower.position.set(
+            r * Math.sin(phi) * Math.cos(theta),
+            r * Math.sin(phi) * Math.sin(theta),
+            r * Math.cos(phi) - 10
+        )
+        tower.lookAt(0, 0, 0)
+        towerGroup.add(tower)
+        towers.push(tower)
     }
-    lineGeometry.setAttribute('position', new THREE.BufferAttribute(linePositions, 3))
-    const lines = new THREE.LineSegments(lineGeometry, lineMaterial)
-    scene.add(lines)
+
+    // Energy Beams (Connectivity)
+    const beamGroup = new THREE.Group()
+    scene.add(beamGroup)
+    const beamMaterial = new THREE.MeshBasicMaterial({ 
+        color: '#00d4a0', 
+        transparent: true, 
+        opacity: 0.15,
+        blending: THREE.AdditiveBlending 
+    })
+
+    for (let i = 0; i < TOWER_COUNT; i++) {
+        const start = towers[i].position
+        const next = towers[(i + 1) % TOWER_COUNT].position
+        
+        const beam = new THREE.Mesh(beamGeometry, beamMaterial)
+        const dist = start.distanceTo(next)
+        beam.scale.z = dist
+        beam.position.copy(start).lerp(next, 0.5)
+        beam.lookAt(next)
+        beamGroup.add(beam)
+    }
+
+    // Lights
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.2)
+    scene.add(ambientLight)
+    const pointLight = new THREE.PointLight('#00d4a0', 1, 100)
+    scene.add(pointLight)
 
     //  Mouse parallax 
     let mouseX = 0, mouseY = 0
@@ -170,20 +205,21 @@ export default function HeroSection({ onStartTour }) {
     const animate = () => {
       animId = requestAnimationFrame(animate)
       const t = clock.getElapsedTime()
-      material.uniforms.uTime.value = t
 
       // Cinematic Flight + Velocity boost
       const vFactor = 1 + Math.abs(velocityRef.current / 400)
       
       // Auto-drift camera
-      camera.position.x = Math.sin(t * 0.2) * 5
-      camera.position.y = Math.cos(t * 0.2) * 5
-      camera.lookAt(0, 0, 0)
+      camera.position.x = Math.sin(t * 0.15) * 10
+      camera.position.y = Math.cos(t * -0.1) * 10
+      camera.lookAt(Math.sin(t * 0.5) * 5, 0, 0)
 
-      particles.rotation.y = t * (0.04 * vFactor) + mouseX * 0.5
-      particles.rotation.x = mouseY * 0.2 + scrollY * (0.0003 * vFactor)
-      
-      lines.rotation.copy(particles.rotation)
+      towerGroup.rotation.y = t * (0.02 * vFactor) + mouseX * 0.2
+      towerGroup.rotation.x = mouseY * 0.1 + scrollY * (0.0002 * vFactor)
+      beamGroup.rotation.copy(towerGroup.rotation)
+
+      // Pulsing towers
+      towerMaterial.emissiveIntensity = 0.5 + Math.sin(t * 2) * 0.3
 
       renderer.render(scene, camera)
     }
@@ -195,9 +231,10 @@ export default function HeroSection({ onStartTour }) {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onResize)
       renderer.dispose()
-      geometry.dispose()
-      lineGeometry.dispose()
-      material.dispose()
+      towerGeometry.dispose()
+      beamGeometry.dispose()
+      towerMaterial.dispose()
+      beamMaterial.dispose()
     }
   }, [])
 
