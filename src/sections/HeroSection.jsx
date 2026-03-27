@@ -2,6 +2,7 @@
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { gsap } from 'gsap'
+import { useScrollVelocity } from '../hooks/useScrollVelocity'
 
 export default function HeroSection() {
   const canvasRef = useRef(null)
@@ -11,6 +12,13 @@ export default function HeroSection() {
   const ctaRef = useRef(null)
   const yearRef = useRef(null)
   const scrollHintRef = useRef(null)
+  const velocity = useScrollVelocity()
+  const velocityRef = useRef(0)
+
+  // Sync velocity to a ref for use in the Three.js loop without re-renders
+  useEffect(() => {
+    velocityRef.current = velocity
+  }, [velocity])
 
   // ─── Three.js Particle System ───────────────────────────────────────────────
   useEffect(() => {
@@ -139,9 +147,10 @@ export default function HeroSection() {
       const t = clock.getElapsedTime()
       material.uniforms.uTime.value = t
 
-      // Slow auto-rotation
-      particles.rotation.y = t * 0.04 + mouseX * 0.3
-      particles.rotation.x = mouseY * 0.15 + scrollY * 0.0003
+      // Slow auto-rotation + Velocity boost
+      const vFactor = 1 + Math.abs(velocityRef.current / 400)
+      particles.rotation.y = t * (0.04 * vFactor) + mouseX * 0.3
+      particles.rotation.x = mouseY * 0.15 + scrollY * (0.0003 * vFactor)
 
       renderer.render(scene, camera)
     }

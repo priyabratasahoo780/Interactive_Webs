@@ -1,10 +1,24 @@
 // Custom cursor component — dot + ring that follow the mouse with GSAP quickTo
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
+import { useScrollVelocity } from '../hooks/useScrollVelocity'
 
 export default function CustomCursor() {
   const dotRef = useRef(null)
   const ringRef = useRef(null)
+  const velocity = useScrollVelocity()
+
+  // Dynamic cursor scale based on scroll speed
+  useEffect(() => {
+    if (ringRef.current) {
+        const scaleFactor = 1 + Math.abs(velocity / 800)
+        gsap.to(ringRef.current, {
+            scale: scaleFactor,
+            duration: 0.3,
+            ease: 'power2.out'
+        })
+    }
+  }, [velocity])
 
   useEffect(() => {
     const dot = dotRef.current

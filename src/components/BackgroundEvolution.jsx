@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useScrollVelocity } from '../hooks/useScrollVelocity'
 
 /**
  * BackgroundEvolution
@@ -9,6 +10,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
  */
 export default function BackgroundEvolution() {
     const bgRef = useRef(null)
+    const velocity = useScrollVelocity()
+    const velocityRef = useRef(0)
+
+    useEffect(() => {
+        velocityRef.current = velocity
+    }, [velocity])
 
     useEffect(() => {
         const bg = bgRef.current
