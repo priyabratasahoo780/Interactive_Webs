@@ -86,15 +86,19 @@ export default function Web3Section() {
       duration: 2, yoyo: true, repeat: -1, ease: 'sine.inOut',
     })
 
-    // 4. Cards stagger in + Internal Parallax
+    // 4. Cards stagger in - Simplified for reliability
     cardsRef.current.forEach((card, i) => {
       if (!card) return
       gsap.fromTo(card,
-        { opacity: 0, scale: 0.8, filter: 'blur(10px)' },
+        { opacity: 0, y: 30 },
         {
-          opacity: 1, scale: 1, filter: 'blur(0px)',
-          duration: 1.2, ease: 'power4.out', delay: i * 0.15,
-          scrollTrigger: { trigger: card, start: 'top 90%' },
+          opacity: 1, y: 0,
+          duration: 0.8, ease: 'power3.out', delay: i * 0.1,
+          scrollTrigger: { 
+            trigger: card, 
+            start: 'top 92%',
+            toggleActions: 'play none none reverse'
+          },
         }
       )
     })
@@ -354,7 +358,7 @@ export default function Web3Section() {
                     ease: 'power3.out'
                 })
               }}
-              className="glass-card p-6 group cursor-pointer transition-colors"
+              className="glass-card p-6 group cursor-pointer transition-colors z-20"
               style={{ opacity: 0, perspective: '1000px', transformStyle: 'preserve-3d' }}
             >
               <div className="text-3xl mb-4 group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 transform-gpu">{p.icon}</div>
