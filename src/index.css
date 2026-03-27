@@ -307,3 +307,31 @@ a, button, .year-badge, .year-btn, .glass-card {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* HUD & SCANNER ANIMATIONS */
+.bg-scanline {
+  background: linear-gradient(
+    to bottom,
+    transparent 50%,
+    rgba(251, 191, 36, 0.05) 50%
+  );
+  background-size: 100% 4px;
+}
+
+@keyframes load-progress {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.animate-load {
+  animation: load-progress 1.5s infinite linear;
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 12s linear infinite;
+}
