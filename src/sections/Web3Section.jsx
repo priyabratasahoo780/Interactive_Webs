@@ -86,7 +86,7 @@ export default function Web3Section() {
       duration: 2, yoyo: true, repeat: -1, ease: 'sine.inOut',
     })
 
-    // 4. Cards stagger in 
+    // 4. Cards stagger in + Internal Parallax
     cardsRef.current.forEach((card, i) => {
       if (!card) return
       gsap.fromTo(card,
@@ -98,6 +98,29 @@ export default function Web3Section() {
         }
       )
     })
+
+    // 7. Elite Quote Reveal (Character-by-character blur-to-focus)
+    const quote = section.querySelector('.quote-text')
+    if (quote) {
+        const text = quote.innerText
+        quote.innerHTML = text.split('').map(char => `<span class="quote-char opacity-0 inline-block">${char === ' ' ? '&nbsp;' : char}</span>`).join('')
+        
+        gsap.to(quote.querySelectorAll('.quote-char'), {
+            opacity: 1,
+            filter: 'blur(0px)',
+            y: 0,
+            stagger: 0.02,
+            duration: 0.8,
+            ease: 'back.out(1.7)',
+            scrollTrigger: {
+                trigger: quote,
+                start: 'top 85%',
+            },
+            onStart: () => {
+                gsap.set(quote.querySelectorAll('.quote-char'), { filter: 'blur(10px)', y: 20 })
+            }
+        })
+    }
 
     // 5. Interactive Magnetic Orb (Mouse Tracking)
     const onMouseMove = (e) => {
@@ -294,24 +317,24 @@ export default function Web3Section() {
               className="glass-card p-6 group cursor-pointer transition-colors"
               style={{ opacity: 0, perspective: '1000px', transformStyle: 'preserve-3d' }}
             >
-              <div className="text-3xl mb-4 group-hover:scale-110 transition-transform duration-300">{p.icon}</div>
+              <div className="text-3xl mb-4 group-hover:scale-125 group-hover:rotate-12 transition-all duration-500 transform-gpu">{p.icon}</div>
               <h3 className="text-base font-display font-semibold mb-2 group-hover:text-[var(--electric-purple)] transition-colors duration-300">
                 {p.title}
               </h3>
-              <p className="text-xs text-[var(--text-muted)] leading-relaxed">{p.desc}</p>
-              <div className="mt-4 h-px w-0 group-hover:w-full bg-gradient-to-r from-[var(--electric-purple)] to-[var(--cyber-green)] transition-all duration-500 rounded-full" />
+              <p className="text-xs text-[var(--text-muted)] leading-relaxed group-hover:text-[var(--text-secondary)] transition-colors duration-300">{p.desc}</p>
+              <div className="absolute bottom-0 left-0 h-[2px] w-0 bg-gradient-to-r from-[var(--electric-purple)] to-[var(--cyber-green)] group-hover:w-full transition-all duration-700 ease-in-out shadow-[0_0_15px_var(--accent-glow)]" />
             </div>
           ))}
         </div>
 
         {/* Closing quote */}
         <div className="mt-20 text-center">
-          <blockquote className="text-2xl md:text-4xl font-display font-light text-[var(--text-secondary)] max-w-3xl mx-auto leading-relaxed">
+          <blockquote className="quote-text text-2xl md:text-4xl font-display font-light text-[var(--text-secondary)] max-w-3xl mx-auto leading-relaxed perspective-1000">
             "The internet will disappear. There will be so many IP addresses,
             so many devices, sensors, things that you are wearing, things that you
             are interacting with, that you won't even sense it."
           </blockquote>
-          <p className="mt-4 text-xs font-mono text-[var(--text-muted)] tracking-widest">— ERIC SCHMIDT, Google Chairman</p>
+          <p className="mt-4 text-xs font-mono text-[var(--text-muted)] tracking-widest animate-pulse opacity-60">— ERIC SCHMIDT, Google Chairman</p>
         </div>
       </div>
     </section>
