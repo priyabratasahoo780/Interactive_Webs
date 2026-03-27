@@ -70,4 +70,8 @@ Every section is meticulously hand-tuned for the best experience on every device
 
 ---
 
+## 👨‍💻 Author
+
+**Crafted with 💖 by [Priyabrata Sahoo](https://github.com/priyabratasahoo780)**
+
 *“From four nodes on ARPANET to a global consciousness — the story continues with you.”*
