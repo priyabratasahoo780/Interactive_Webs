@@ -70,11 +70,12 @@ a, button, .year-badge, .year-btn, .glass-card {
   mix-blend-mode: screen;
   transform: translate(-50%, -50%);
   transition: transform 0.15s cubic-bezier(0.23, 1, 0.32, 1), width 0.3s ease, height 0.3s ease, opacity 0.3s;
+  will-change: transform, opacity;
 }
 
 .cursor-ring {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border: 1.5px solid var(--cyber-green);
   border-radius: 50%;
   position: fixed;
@@ -83,12 +84,13 @@ a, button, .year-badge, .year-btn, .glass-card {
   z-index: 9998;
   transform: translate(-50%, -50%);
   transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), width 0.4s cubic-bezier(0.23, 1, 0.32, 1), height 0.4s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.3s ease, opacity 0.3s ease;
+  will-change: transform, width, height;
 }
 
-.cursor-dot.cursor-hover { width: 4px; height: 4px; }
+.cursor-dot.cursor-hover { width: 4.5px; height: 4.5px; }
 .cursor-ring.cursor-hover {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border-color: var(--neon-pink);
   opacity: 0.6;
 }
@@ -251,6 +253,7 @@ a, button, .year-badge, .year-btn, .glass-card {
   inset: 0;
   width: 100%;
   height: 100%;
+  will-change: transform;
 }
 
 /* WEB3 HOLOGRAPHIC ANIMATIONS */
@@ -264,6 +267,10 @@ a, button, .year-badge, .year-btn, .glass-card {
   10% { opacity: 1; }
   90% { opacity: 1; }
   100% { top: 100%; opacity: 0; }
+}
+
+.glass-card {
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
 }
 
 @keyframes spin-slow {

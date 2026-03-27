@@ -128,16 +128,17 @@ export default function Web3Section() {
         })
     }
 
-    // 9. Initial List Stagger + Border Draw
-    gsap.from('.toggle-list-item', {
-        opacity: 0,
-        x: -20,
-        stagger: 0.05,
-        duration: 0.5,
-        ease: 'power2.out',
-        delay: 0.5,
-        scrollTrigger: { trigger: '.toggle-container-card', start: 'top 90%' }
-    })
+    // 9. Initial List Reveal (ensure it's visible on load)
+    gsap.fromTo('.toggle-list-item', 
+        { opacity: 0, x: -10 },
+        { 
+            opacity: 1, x: 0, 
+            stagger: 0.05, 
+            duration: 0.8, 
+            ease: 'power2.out',
+            scrollTrigger: { trigger: '.toggle-container-card', start: 'top 95%' }
+        }
+    )
     
     const cardBorder = section.querySelector('.card-border-path')
     if (cardBorder) {
@@ -370,7 +371,7 @@ export default function Web3Section() {
                   className={`flex-1 py-2 px-4 rounded-full font-mono text-xs tracking-widest uppercase transition-all duration-400 relative z-10
                     ${toggle === t
                       ? 'text-[var(--bg-dark)] font-bold'
-                      : 'text-[var(--text-muted)] hover:text-[var(--text-secondary)]'
+                      : 'text-white/40 hover:text-white/80'
                     }`}
                   style={toggle === t ? { backgroundColor: PAST_PRESENT[t].accent } : {}}
                 >
@@ -387,8 +388,16 @@ export default function Web3Section() {
               {/* Scanning light line */}
               <div className="absolute top-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-400/50 to-transparent animate-scan-y z-10" />
 
+              {/* Data header for fill */}
+              <div className="relative z-20 mb-4">
+                <h4 className="text-[10px] font-mono text-[var(--cyber-green)] tracking-[0.3em] uppercase opacity-80">
+                  Network Architecture // {toggle.toUpperCase()}
+                </h4>
+                <div className="h-px w-12 bg-[var(--cyber-green)]/30 mt-1" />
+              </div>
+
               {/* Data stream dots (SVG) */}
-              <div className="absolute right-4 top-4 opacity-20 hidden md:block">
+              <div className="absolute right-4 top-4 opacity-30 hidden md:block">
                 <svg width="24" height="24" viewBox="0 0 24 24" className="text-cyan-400 fill-current animate-pulse">
                   <rect x="0" y="0" width="4" height="4" />
                   <rect x="8" y="0" width="4" height="4" />
@@ -410,7 +419,7 @@ export default function Web3Section() {
               {PAST_PRESENT[toggle].items.map((item, i) => (
                 <div
                   key={item}
-                  className="toggle-list-item relative z-10 flex items-center gap-3 text-[10px] md:text-sm font-mono text-[var(--text-secondary)] group hover:text-[var(--text-primary)] transition-colors"
+                  className="toggle-list-item relative z-20 flex items-center gap-3 text-[10px] md:text-sm font-mono text-white/90 group hover:text-[var(--cyber-green)] transition-colors"
                 >
                   <span
                     className="w-1.5 h-1.5 md:w-2 md:h-2 rounded-full flex-shrink-0 shadow-[0_0_8px_currentColor] group-hover:scale-125 transition-transform"
@@ -422,9 +431,9 @@ export default function Web3Section() {
               ))}
               
               {/* Bottom status line */}
-              <div className="pt-4 mt-2 border-t border-white/5 flex justify-between items-center opacity-40 text-[7px] md:text-[9px] font-mono uppercase tracking-widest">
+              <div className="pt-4 mt-2 border-t border-white/5 flex justify-between items-center opacity-70 text-[7px] md:text-[9px] font-mono uppercase tracking-widest text-white/60">
                 <span>Protocol: {toggle.toUpperCase()}</span>
-                <span className="animate-pulse">Live // Encryption Active</span>
+                <span className="animate-pulse text-[var(--cyber-green)]">Live // Encryption Active</span>
               </div>
             </div>
           </div>

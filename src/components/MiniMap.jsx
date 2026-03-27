@@ -62,13 +62,13 @@ export default function MiniMap() {
                     <div 
                         className={`w-1.5 h-1.5 rounded-full transition-all duration-500 
                             ${activeSection === section.id 
-                                ? 'bg-[var(--accent-color)] scale-150 shadow-[0_0_12px_var(--accent-color)]' 
+                                ? 'bg-[var(--cyber-green)] scale-150 shadow-[0_0_12px_var(--cyber-green)]' 
                                 : 'bg-white/20 hover:bg-white/50'}`} 
                     />
 
                     {/* Active Ring */}
                     {activeSection === section.id && (
-                        <div className="absolute inset-[-4px] border border-[var(--accent-color)] opacity-40 rounded-full animate-ping" 
+                        <div className="absolute inset-[-4px] border border-[var(--cyber-green)] opacity-40 rounded-full animate-ping" 
                              style={{ animationDuration: '3s' }} />
                     )}
                 </button>

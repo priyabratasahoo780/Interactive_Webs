@@ -71,7 +71,7 @@ export default function App() {
       <BackgroundEvolution />
 
       {/* Navigation & Controls */}
-      <Navigation />
+      <Navigation onStartTour={() => setIsTourActive(true)} />
       <MiniMap />
       <TimeTravelSlider />
       <DataOverlay />
@@ -95,7 +95,7 @@ export default function App() {
 // Footer 
 function Footer() {
   return (
-    <footer className="relative py-20 bg-[#020510] border-t border-white/5 overflow-hidden">
+    <footer id="footer" className="relative py-20 bg-[#020510] border-t border-white/5 overflow-hidden">
       {/* Radial glow */}
       <div
         className="absolute inset-0 pointer-events-none"

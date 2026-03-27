@@ -43,7 +43,13 @@ const TOUR_SCRIPT = [
     { 
         id: 'spatial', 
         label: 'Spatial',
-        text: "And finally, the Spatial Web. Where the screen disappears, and reality itself becomes an interactive digital layer. Thank you for exploring with me.",
+        text: "And the Spatial Web. Where the screen disappears, and reality itself becomes an interactive digital layer.",
+        delay: 6000 
+    },
+    { 
+        id: 'footer', 
+        label: 'Conclusion',
+        text: "The story of the internet isn't over. It is now in your hands. What will we build next? Thank you for exploring this evolution with me.",
         delay: 8000 
     }
 ]
