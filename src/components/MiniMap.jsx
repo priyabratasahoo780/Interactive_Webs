@@ -7,7 +7,9 @@ const SECTIONS = [
     { id: 'arpanet', label: 'ARPANET' },
     { id: 'dotcom', label: 'Dotcom' },
     { id: 'social', label: 'Social' },
-    { id: 'web3', label: 'Future' }
+    { id: 'web3', label: 'Future' },
+    { id: 'airevolution', label: 'AI' },
+    { id: 'spatial', label: 'Spatial' }
 ]
 
 /**

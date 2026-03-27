@@ -14,6 +14,8 @@ import ArpanetSection  from './sections/ArpanetSection'
 import DotcomSection   from './sections/DotcomSection'
 import SocialSection   from './sections/SocialSection'
 import Web3Section     from './sections/Web3Section'
+import AIRevolutionSection from './sections/AIRevolutionSection'
+import SpatialComputingSection from './sections/SpatialComputingSection'
 
 // Hooks
 import { useSmoothScroll }    from './hooks/useSmoothScroll'
@@ -74,6 +76,8 @@ export default function App() {
         <DotcomSection />
         <SocialSection />
         <Web3Section />
+        <AIRevolutionSection />
+        <SpatialComputingSection />
         <Footer />
       </main>
     </>

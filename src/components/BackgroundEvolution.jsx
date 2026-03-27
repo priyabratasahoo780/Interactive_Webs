@@ -34,7 +34,7 @@ export default function BackgroundEvolution() {
         })
 
         // Transition background masks/glows based on section
-        const sections = ['#hero', '#arpanet', '#dotcom', '#social', '#web3']
+        const sections = ['#hero', '#arpanet', '#dotcom', '#social', '#web3', '#airevolution', '#spatial']
         sections.forEach((id, i) => {
             ScrollTrigger.create({
                 trigger: id,
@@ -50,7 +50,9 @@ export default function BackgroundEvolution() {
                 'radial-gradient(circle at 20% 30%, rgba(34, 197, 94, 0.08) 0%, transparent 60%)', // Arpanet
                 'radial-gradient(circle at 80% 40%, rgba(240, 171, 252, 0.08) 0%, transparent 60%)', // Dotcom
                 'radial-gradient(circle at 30% 70%, rgba(96, 165, 250, 0.08) 0%, transparent 60%)', // Social
-                'radial-gradient(circle at 50% 80%, rgba(129, 140, 248, 0.1) 0%, transparent 70%)'  // Web3
+                'radial-gradient(circle at 50% 80%, rgba(129, 140, 248, 0.1) 0%, transparent 70%)',  // Web3
+                'radial-gradient(circle at 20% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 60%)',  // AI
+                'radial-gradient(circle at 80% 80%, rgba(34, 211, 238, 0.1) 0%, transparent 70%)'    // Spatial
             ]
             
             gsap.to('.bg-glow-main', {

@@ -39,6 +39,18 @@ export function useThemeTransition() {
                 '--accent-color': '#fbbf24', // Gold/Amber
                 '--accent-glow': 'rgba(251, 191, 36, 0.4)',
                 '--text-main': '#fff7ed'
+            },
+            airevolution: {
+                '--bg-color': '#050510', // Deep ink
+                '--accent-color': '#f59e0b', // Amber
+                '--accent-glow': 'rgba(245, 158, 11, 0.4)',
+                '--text-main': '#fffef0'
+            },
+            spatial: {
+                '--bg-color': '#020205', // Void black
+                '--accent-color': '#22d3ee', // Cyan
+                '--accent-glow': 'rgba(34, 211, 238, 0.4)',
+                '--text-main': '#f0fdff'
             }
         }
 
@@ -47,7 +59,9 @@ export function useThemeTransition() {
             { id: '#arpanet', theme: themes.arpanet },
             { id: '#dotcom', theme: themes.dotcom },
             { id: '#social', theme: themes.social },
-            { id: '#web3', theme: themes.web3 }
+            { id: '#web3', theme: themes.web3 },
+            { id: '#airevolution', theme: themes.airevolution },
+            { id: '#spatial', theme: themes.spatial }
         ]
 
         sections.forEach(({ id, theme }) => {
