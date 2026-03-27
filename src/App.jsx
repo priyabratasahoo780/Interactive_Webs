@@ -25,6 +25,8 @@ import { useAudioSystem }     from './hooks/useAudioSystem'
 
 // Components
 import MiniMap             from './components/MiniMap'
+import TimeTravelSlider    from './components/TimeTravelSlider'
+import BackgroundEvolution from './components/BackgroundEvolution'
 import DataOverlay         from './components/DataOverlay'
 import AchievementSystem   from './components/AchievementSystem'
 import MouseTrail         from './components/MouseTrail'
