@@ -25,10 +25,10 @@ import { useThemeTransition } from './hooks/useThemeTransition'
 import { useAudioSystem }     from './hooks/useAudioSystem'
 
 // Components
-import BackgroundEvolution from './components/BackgroundEvolution'
-import TimeTravelSlider    from './components/TimeTravelSlider'
 import MiniMap             from './components/MiniMap'
 import DataOverlay         from './components/DataOverlay'
+import AchievementSystem   from './components/AchievementSystem'
+import MouseTrail         from './components/MouseTrail'
 
 // Register GSAP plugins (idempotent)
 gsap.registerPlugin(ScrollTrigger, ScrollToPlugin)
@@ -46,8 +46,43 @@ export default function App() {
   useThemeTransition()
   useAudioSystem()
 
+  const velocity = useScrollVelocity()
+  const mainRef = useRef(null)
+
+  // ─── Supreme Polish: Page Warp & Shake ─────────────────────────────────────
   useEffect(() => {
-    // Refresh ScrollTrigger after fonts/images are loaded
+    if (!mainRef.current) return
+    const v = Math.abs(velocity)
+    
+    // 1. Warp Scale (Perspective stretch)
+    const scale = 1 + (v / 5000)
+    const blur = v / 800
+    const contrast = 100 + (v / 20)
+
+    gsap.to(mainRef.current, {
+        '--warp-scale': Math.min(scale, 1.15),
+        '--warp-blur': `${Math.min(blur, 4)}px`,
+        '--warp-contrast': `${Math.min(contrast, 150)}%`,
+        duration: 0.4,
+        ease: 'power2.out'
+    })
+
+    // 2. Cinematic Shake for extreme speeds
+    if (v > 2000) {
+        gsap.to(mainRef.current, {
+            x: 'random(-5, 5)',
+            y: 'random(-5, 5)',
+            duration: 0.1,
+            repeat: 3,
+            yoyo: true,
+            ease: 'none'
+        })
+    } else {
+        gsap.to(mainRef.current, { x: 0, y: 0, duration: 0.3 })
+    }
+  }, [velocity])
+
+  useEffect(() => {
     window.addEventListener('load', () => {
       ScrollTrigger.refresh()
     })
@@ -72,9 +107,18 @@ export default function App() {
       <MiniMap />
       <TimeTravelSlider />
       <DataOverlay />
+      <AchievementSystem />
+      <MouseTrail />
 
-      {/* Main story */}
-      <main className="relative z-10">
+      {/* Main story with Warp Effects applied via CSS Vars */}
+      <main 
+        ref={mainRef}
+        className="relative z-10 transition-all duration-300"
+        style={{
+            transform: 'scale(var(--warp-scale, 1))',
+            filter: 'blur(var(--warp-blur, 0px)) contrast(var(--warp-contrast, 100%))'
+        }}
+      >
         <HeroSection />
         <ArpanetSection />
         <DotcomSection />
