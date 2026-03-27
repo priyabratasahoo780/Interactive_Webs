@@ -140,7 +140,15 @@ export default function DotcomSection() {
       ref={sectionRef}
       className="section relative min-h-screen bg-[var(--bg-dark)] overflow-hidden"
     >
-      {/* Subtle gradient accent */}
+      {/* Section background telemetry */}
+      <div className="absolute inset-0 pointer-events-none opacity-5 select-none overflow-hidden flex flex-col justify-around py-20 font-mono">
+          <div className="text-[12vw] leading-none animate-marquee-slow text-fire-orange/40">
+              $AMZN +45% | $MSFT +12% | $YHOO +110% | $EBAY +22% | $NSCP +88% | $AMZN +45% | $MSFT +12%
+          </div>
+          <div className="text-[12vw] leading-none animate-marquee-slow-reverse text-fire-orange/20">
+              NASDAQ:5000 | BUBBLE_EXPANDING... | NEW_ECONOMY:TRUE | IPO_FEVER:ACTIVE | NASDAQ:5000
+          </div>
+      </div>
       <div
         className="absolute right-0 top-0 w-[600px] h-[600px] pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(99,102,241,0.07) 0%, transparent 65%)', transform: 'translate(20%, -20%)' }}

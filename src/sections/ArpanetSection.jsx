@@ -172,6 +172,13 @@ export default function ArpanetSection() {
     >
       {/* Background accent */}
       <div className="absolute inset-0 bg-grid opacity-20 pointer-events-none" />
+      
+      {/* Background Terminal Flow (Empty space fill) */}
+      <div className="absolute inset-0 pointer-events-none opacity-5 select-none overflow-hidden flex flex-col justify-between py-10 font-mono text-[8vw] leading-none text-[var(--cyber-green)]">
+          <div className="animate-marquee-slow opacity-60">LOGIN:ADMIN // ATTACHING_TCP_STACK // SENDING_PACKET_01...</div>
+          <div className="animate-marquee-slow-reverse opacity-40">DEST:UCLA // SRC:SRI // CONNECT_ESTABLISHED // ERROR_NONE...</div>
+          <div className="animate-marquee-slow opacity-20">HOST_DOWN // RETRYING_GATEWAY // PACKET_LOSS:3% // STABLE...</div>
+      </div>
       <div
         className="absolute left-0 top-0 w-96 h-96 rounded-full pointer-events-none"
         style={{ background: 'radial-gradient(circle, rgba(0,212,160,0.07) 0%, transparent 70%)', transform: 'translate(-30%, -30%)' }}
