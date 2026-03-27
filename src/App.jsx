@@ -1,6 +1,12 @@
 // App.jsx — Root component, wires all sections + global elements
 import { useEffect } from 'react'
+import { gsap } from 'gsap'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
+
+// Components
+import CustomCursor    from './components/CustomCursor'
+import Navigation      from './components/Navigation'
 
 // Sections
 import HeroSection     from './sections/HeroSection'
