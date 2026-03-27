@@ -335,3 +335,22 @@ a, button, .year-badge, .year-btn, .glass-card {
 .animate-spin-slow {
   animation: spin-slow 12s linear infinite;
 }
+
+/* MARQUEE DATA STREAMS */
+@keyframes marquee-slow {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@keyframes marquee-slow-reverse {
+  from { transform: translateX(-50%); }
+  to { transform: translateX(0); }
+}
+
+.animate-marquee-slow {
+  animation: marquee-slow 40s linear infinite;
+}
+
+.animate-marquee-slow-reverse {
+  animation: marquee-slow-reverse 40s linear infinite;
+}
