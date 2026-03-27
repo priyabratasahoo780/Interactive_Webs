@@ -4,7 +4,7 @@ import * as THREE from 'three'
 import { gsap } from 'gsap'
 import { useScrollVelocity } from '../hooks/useScrollVelocity'
 
-export default function HeroSection() {
+export default function HeroSection({ onStartTour }) {
   const canvasRef = useRef(null)
   const heroRef = useRef(null)
   const headingRef = useRef(null)
@@ -286,11 +286,13 @@ export default function HeroSection() {
 
           <button
             data-cursor
-            className="px-8 py-4 rounded-full font-mono text-sm tracking-wider
-              border border-[var(--border-glow)] text-[var(--text-secondary)] hover:text-[var(--cyber-green)]
-              hover:border-[var(--cyber-green)] transition-all duration-300"
+            onClick={onStartTour}
+            className="group flex items-center gap-3 px-8 py-4 rounded-full border border-white/10 hover:border-[var(--cyber-green)] hover:bg-[var(--cyber-green-dim)] transition-all duration-300"
           >
-            Learn More
+            <div className="w-8 h-8 rounded-full border border-white/20 flex items-center justify-center group-hover:border-[var(--cyber-green)]">
+                <div className="w-2 h-2 bg-white rounded-full group-hover:bg-[var(--cyber-green)] animate-ping" />
+            </div>
+            <span className="font-mono text-[10px] tracking-widest uppercase">Start Guided Tour</span>
           </button>
         </div>
       </div>
