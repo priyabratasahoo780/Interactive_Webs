@@ -23,8 +23,8 @@ export function useVoiceNarration() {
         const voices = synth.getVoices()
         utterance.voice = voices.find(v => v.name.includes('Google') || v.name.includes('Female')) || voices[0]
         
-        utterance.rate = 0.95
-        utterance.pitch = 1.1
+        utterance.rate = 0.85
+        utterance.pitch = 1.0
         
         utterance.onstart = () => {
             setIsSpeaking(true)
