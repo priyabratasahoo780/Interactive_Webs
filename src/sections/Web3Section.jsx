@@ -260,6 +260,37 @@ export default function Web3Section() {
       {/* Dynamic Particle Field */}
       <div className="particle-field absolute inset-0 pointer-events-none overflow-hidden" />
 
+      {/* Background Architectural Layer (Circuitry) */}
+      <div className="absolute inset-0 pointer-events-none opacity-20">
+        <svg className="w-full h-full" viewBox="0 0 1000 1000" preserveAspectRatio="none">
+          <defs>
+            <linearGradient id="glow-grad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="rgba(99,102,241,0)" />
+              <stop offset="50%" stopColor="rgba(99,102,241,0.2)" />
+              <stop offset="100%" stopColor="rgba(99,102,241,0)" />
+            </linearGradient>
+          </defs>
+          <path d="M0,200 L100,200 L150,250 L300,250 L350,200 L500,200" fill="none" stroke="url(#glow-grad)" strokeWidth="0.5" className="animate-pulse" />
+          <path d="M1000,800 L900,800 L850,750 L700,750 L650,800 L500,800" fill="none" stroke="url(#glow-grad)" strokeWidth="0.5" className="animate-pulse" />
+          <circle cx="150" cy="250" r="1" fill="#6366f1" />
+          <circle cx="300" cy="250" r="1" fill="#6366f1" />
+          <circle cx="850" cy="750" r="1" fill="#6366f1" />
+          <circle cx="700" cy="750" r="1" fill="#6366f1" />
+          {/* Central Hub Brackets */}
+          <path d="M450,480 L450,450 L480,450" fill="none" stroke="rgba(0,212,160,0.2)" strokeWidth="1" />
+          <path d="M550,520 L550,550 L520,550" fill="none" stroke="rgba(0,212,160,0.2)" strokeWidth="1" />
+        </svg>
+      </div>
+
+      {/* Hex Stream Background (Sideways scrolling data) */}
+      <div className="absolute inset-0 pointer-events-none opacity-5 select-none overflow-hidden flex flex-col justify-around py-20">
+         {[1,2,3,4,5].map(i => (
+             <div key={i} className={`text-[10vw] font-mono whitespace-nowrap leading-none ${i % 2 === 0 ? 'animate-marquee-slow' : 'animate-marquee-slow-reverse'}`}>
+                0x001100 0xDEADEB 0xFEF00A 0x00FF00 0xABABAB 0xFFFF00 0x888888 0x001100 0xDEADEB 0xFEF00A 0x00FF00 0xABABAB 0xFFFF00 0x888888
+             </div>
+         ))}
+      </div>
+
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
 
         {/* Section header */}
