@@ -116,21 +116,42 @@ export default function AIRevolutionSection() {
             {/* Background Synaptic Layer (Vertical Signal Flow) */}
             <div className="absolute inset-0 pointer-events-none opacity-20">
                 <svg className="w-full h-full" viewBox="0 0 1000 1000" preserveAspectRatio="none">
-                    <line x1="10%" y1="0" x2="10%" y2="1000" stroke="rgba(251, 191, 36, 0.1)" strokeWidth="0.5" strokeDasharray="5,10" />
-                    <line x1="30%" y1="0" x2="30%" y2="1000" stroke="rgba(251, 191, 36, 0.05)" strokeWidth="0.5" />
-                    <line x1="70%" y1="0" x2="70%" y2="1000" stroke="rgba(251, 191, 36, 0.05)" strokeWidth="0.5" />
-                    <line x1="90%" y1="0" x2="90%" y2="1000" stroke="rgba(251, 191, 36, 0.1)" strokeWidth="0.5" strokeDasharray="5,10" />
+                    {[10, 20, 30, 40, 50, 60, 70, 80, 90].map(x => (
+                        <line 
+                            key={x}
+                            x1={`${x}%`} y1="0" x2={`${x}%`} y2="1000" 
+                            stroke="rgba(251, 191, 36, 0.08)" 
+                            strokeWidth="0.5" 
+                            strokeDasharray={x % 20 === 0 ? "10,20" : "5,15"} 
+                            className="animate-pulse"
+                            style={{ animationDelay: `${x * 0.1}s` }}
+                        />
+                    ))}
                 </svg>
             </div>
 
-            {/* Scrolling Neural Telemetry Tickers (Empty space fill) */}
-            <div className="absolute bottom-10 left-0 w-full pointer-events-none opacity-10 select-none overflow-hidden space-y-2">
-                <div className="text-[6vw] font-mono whitespace-nowrap leading-none animate-marquee-slow text-amber-500/40">
-                    NEURAL_WEIGHTS:[0.84, 0.91, 0.12, 0.77] // SYNAPSE_DENSITY:HIGH // OPTIMIZING_LAYER_4...
-                </div>
-                <div className="text-[6vw] font-mono whitespace-nowrap leading-none animate-marquee-slow-reverse text-amber-500/20">
-                    LLM_CONTEXT_WINDOW:EXPANDING // TOKEN_VELOCITY:450/SEC // Q_STAR_PROTOCOL:ACTIVE...
-                </div>
+            {/* High-Density Neural Telemetry (Fill full height) */}
+            <div className="absolute inset-0 pointer-events-none opacity-[0.07] select-none overflow-hidden flex flex-col justify-between py-10 space-y-4">
+                {[...Array(12)].map((_, i) => (
+                    <div 
+                        key={i} 
+                        className={`text-[5vw] font-mono whitespace-nowrap leading-none ${i % 2 === 0 ? 'animate-marquee-slow' : 'animate-marquee-slow-reverse'}`}
+                        style={{ 
+                            animationDuration: `${30 + (i * 5)}s`,
+                            color: i % 3 === 0 ? '#fbbf24' : '#f59e0b',
+                            opacity: 1 - (i * 0.05)
+                        }}
+                    >
+                        {i % 2 === 0 
+                          ? "NEURAL_WEIGHTS:[0.84, 0.91, 0.12, 0.77] // SYNAPSE_DENSITY:HIGH // OPTIMIZING_LAYER_4... " 
+                          : "LLM_CONTEXT_WINDOW:EXPANDING // TOKEN_VELOCITY:450/SEC // Q_STAR_PROTOCOL:ACTIVE... "
+                        }
+                        {i % 2 === 0 
+                          ? "NEURAL_WEIGHTS:[0.84, 0.91, 0.12, 0.77] // SYNAPSE_DENSITY:HIGH // OPTIMIZING_LAYER_4... " 
+                          : "LLM_CONTEXT_WINDOW:EXPANDING // TOKEN_VELOCITY:450/SEC // Q_STAR_PROTOCOL:ACTIVE... "
+                        }
+                    </div>
+                ))}
             </div>
             
             <div className="relative z-10 w-full max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center text-center lg:text-left pt-12 lg:pt-0">
