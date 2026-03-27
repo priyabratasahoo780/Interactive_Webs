@@ -30,6 +30,18 @@ export default function SocialSection() {
   const velocity = useScrollVelocity()
   const orbitTlRef = useRef([])
 
+  // 0. Auto-play timeline every 3 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+        setActiveYear(prev => {
+            const currentIndex = TIMELINE_YEARS.indexOf(prev)
+            const nextIndex = (currentIndex + 1) % TIMELINE_YEARS.length
+            return TIMELINE_YEARS[nextIndex]
+        })
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [])
+
   // Dynamic timeScale for floating elements
   useEffect(() => {
     orbitTlRef.current.forEach(tl => {
