@@ -1,6 +1,6 @@
 # 🌐 Internet Evolution — An Interactive Journey
 
-> **An immersive, cinematic storytelling experience exploring the history of the world's most transformative network.**
+> **An immersive, cinematic storytelling experience exploring the history of the world's most transformative network — now refined to a technical Masterwork.**
 
 ![Internet Evolution Mascot](./public/mascot.png)
 
@@ -13,23 +13,37 @@ Our custom **AI Robot Guide** provides a narrated, hands-free experience. When y
 - **Cinematic Auto-Scrolling**: Navigates sections with weighted, camera-like movement.
 - **Voice Narration**: Uses advanced Text-to-Speech (Web Speech API) to tell the story of each era.
 - **Interactive HUD**: Displays real-time data and section protocols alongside the guide.
+- **Expanded Journey**: The tour now includes the **AI Revolution** and **Spatial Web**, with a unique **Conclusion** at the footer.
+
+### 🧭 Modern Floating Navigation
+Experience a sleek **Glassmorphism Capsule** navbar that follows you throughout the story:
+- **GSAP Sliding Indicator**: A smooth, elastic pill that tracks your current section as you scroll.
+- **Global Section Sync**: Every chapter of the internet's evolution is just one click away.
+
+---
 
 ## 🛠️ Technical Masterwork
 
 This project is built with a focus on buttery-smooth performance and ultra-premium aesthetics:
 
-- **⚛️ React 19**: Modern component architecture for high-performance state management.
-- **✨ GSAP + ScrollTrigger**: Power4-eased reveals and intricate cinematic timelines.
-- **🌪️ Three.js**: Generative particle galaxies and 3D network nodes in the Hero section.
-- **🌊 Lenis Scroll**: Weighted, inertial smooth scrolling for a luxurious tactile feel.
-- **🎨 Tailwind CSS**: Responsive, utility-first styling with custom glassmorphism effects.
+| Feature | Tech Powering It | Result |
+| :--- | :--- | :--- |
+| **Smooth Scroll** | [Lenis](https://github.com/darkroomengineering/lenis) | 60fps buttery-smooth inertial scrolling. |
+| **Motion Physics** | [GSAP](https://gsap.com/) | Elastic magnetic buttons, quickTo mouse tracking, and complex timelines. |
+| **3D Rendering** | [Three.js](https://threejs.org/) | Generative particle galaxies and reactive 3D network nodes. |
+| **Performance** | GPU Acceleration | Injected `will-change` hints for hardware-accelerated transforms. |
+| **Adaptability** | Tailwind CSS | Pixel-perfect layouts for Mobile, Tablet, and Desktop. |
 
-## 📱 Fully Responsive
+---
 
-Every section is meticulously hand-tuned for **Mobile, Tablet, and Desktop**.
-- **Mobile-First Navigation**: A high-tech animated hamburger menu with a full-screen overlay.
-- **Fluid Layouts**: Text and 3D elements scale perfectly across all viewport widths.
-- **Touch Optimized**: Weighted interactions and increased hit areas for seamless mobile exploration.
+## 📱 Fully Responsive Perfection
+
+Every section is meticulously hand-tuned for the best experience on every device:
+- **Mobile-First Core**: A high-tech animated hamburger menu with a full-screen blurred overlay.
+- **Adaptive UI**: High-end data cards, holographic globes, and 3D visuals scale perfectly for portrait orientation.
+- **Minimalist Cursor**: A custom, precise 6px/22px cursor that provides high-end visual feedback on all interactions.
+
+---
 
 ## 🛠️ Installation & Tech Setup
 
