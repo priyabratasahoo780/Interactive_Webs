@@ -46,7 +46,7 @@ export default function DotcomSection() {
     const track   = trackRef.current
     if (!section || !track) return
 
-    // ── 1. Horizontal scroll pinned inside vertical page scroll ───────────────
+    //  1. Horizontal scroll pinned inside vertical page scroll 
     const totalScroll = track.scrollWidth - window.innerWidth + 80
 
     const pinTween = gsap.to(track, {
@@ -64,7 +64,7 @@ export default function DotcomSection() {
     })
     timelineRef.current = pinTween
 
-    // ── 2. Cards scale-in as they come into viewport ──────────────────────────
+    //  2. Cards scale-in as they come into viewport 
     cardsRef.current.forEach((card, i) => {
       if (!card) return
       gsap.fromTo(card,
@@ -77,7 +77,7 @@ export default function DotcomSection() {
       )
     })
 
-    // ── 3. Counter animations (triggered on scroll into view) ─────────────────
+    //  3. Counter animations (triggered on scroll into view) 
     statsRef.current.forEach((el) => {
       if (!el) return
       const target = parseInt(el.dataset.target, 10)
@@ -181,7 +181,7 @@ export default function DotcomSection() {
         </div>
       </div>
 
-      {/* ── Horizontal scroll track ───────────────────────────────────────────── */}
+      {/*  Horizontal scroll track  */}
       <div className="flex items-center h-screen pt-12 md:pt-52 pb-10 pl-6 md:pl-12">
         <div ref={trackRef} className="horizontal-track gap-5">
           {/* Intro card */}

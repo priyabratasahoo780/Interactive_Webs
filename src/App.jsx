@@ -7,6 +7,7 @@ import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 // Components
 import CustomCursor    from './components/CustomCursor'
 import Navigation      from './components/Navigation'
+import Loader          from './components/Loader'
 
 // Sections
 import HeroSection     from './sections/HeroSection'
@@ -42,6 +43,7 @@ ScrollTrigger.defaults({
 
 export default function App() {
   const [isTourActive, setIsTourActive] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   useSmoothScroll()
   useScrollProgress()
@@ -59,6 +61,8 @@ export default function App() {
 
   return (
     <>
+      {isLoading && <Loader onComplete={() => setIsLoading(false)} />}
+
       {/* Scroll progress bar */}
       <div className="scroll-progress" />
 

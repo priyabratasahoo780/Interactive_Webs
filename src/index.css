@@ -354,3 +354,18 @@ a, button, .year-badge, .year-btn, .glass-card {
 .animate-marquee-slow-reverse {
   animation: marquee-slow-reverse 40s linear infinite;
 }
+
+/* LOADER UTILITIES */
+.milestone-content {
+  will-change: opacity, transform;
+}
+
+.bg-scanline {
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(0, 212, 160, 0.05) 50%,
+    transparent 100%
+  );
+  background-size: 100% 4px;
+}
